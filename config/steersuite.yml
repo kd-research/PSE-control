@@ -1,0 +1,3 @@
+steersuite_exec_base: "/home/kaidong/SteerSuite-P2/build/bin"
+steersuite_exec_cmd: "./steersim -commandline -config minimal.xml"
+steersuite_record_pool: "/tmp/steersimRecord"
