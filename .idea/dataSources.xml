@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="parameter" uuid="e6dddee1-795e-41c9-8622-bb7c0c40c131">
+    <data-source source="LOCAL" name="parameter" uuid="1f9f7732-5f8f-4095-8624-f7be6bd12007">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/parameter.db</jdbc-url>
+      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/storage/parameter.db</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>

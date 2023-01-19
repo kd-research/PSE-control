@@ -30,13 +30,29 @@
     <orderEntry type="library" scope="PROVIDED" name="rubocop-ast (v1.24.1, RVM: ruby-3.0.0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="ruby-progressbar (v1.11.0, RVM: ruby-3.0.0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="sqlite3 (v1.6.0, RVM: ruby-3.0.0) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="tqdm (v0.4.1, RVM: ruby-3.0.0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="tzinfo (v2.0.5, RVM: ruby-3.0.0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="unicode-display_width (v2.4.2, RVM: ruby-3.0.0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="yaml (v0.1.1, RVM: ruby-3.0.0) [gem]" level="application" />
   </component>
   <component name="RakeTasksCache">
     <option name="myRootTask">
-      <RakeTaskImpl id="rake" />
+      <RakeTaskImpl id="rake">
+        <subtasks>
+          <RakeTaskImpl id="db">
+            <subtasks>
+              <RakeTaskImpl description="" fullCommand="db:clean" id="clean" />
+              <RakeTaskImpl description="" fullCommand="db:initialize" id="initialize" />
+              <RakeTaskImpl description="" fullCommand="db:reset" id="reset" />
+            </subtasks>
+          </RakeTaskImpl>
+          <RakeTaskImpl id="steersuite">
+            <subtasks>
+              <RakeTaskImpl description="" fullCommand="steersuite:auto_simulate" id="auto_simulate" />
+            </subtasks>
+          </RakeTaskImpl>
+        </subtasks>
+      </RakeTaskImpl>
     </option>
   </component>
 </module>

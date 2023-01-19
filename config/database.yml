@@ -1,2 +1,9 @@
-adapter: 'sqlite3'
-database: '/tmp/parameter.db'
+default: &DEFAULT
+  adapter: 'sqlite3'
+  database: 'storage/parameter.db'
+  pool: 32
+  timeout: 1000
+
+test:
+  <<: *DEFAULT
+  database: '/tmp/test.sqlite3'

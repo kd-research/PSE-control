@@ -5,26 +5,47 @@ require 'yaml'
 require 'parallel'
 namespace :steersuite do
   require_relative 'lib/parameter_object'
-  require_relative 'lib/steersim_worker'
+  require_relative 'lib/steer_suite'
   ParameterObject.establish_connection
 
-  task :auto_simulate do
-    unsimulated = ParameterObject.where(file: nil)
-                                 .or(ParameterObject.where(file: ''))
-    Parallel.each(unsimulated, progress: "Simulate") { |pobj| SteersimWorker.simulate(pobj) }
+  config = YAML.safe_load(File.open('config/steersuite.yml'))
+
+  task auto_simulate: :clean do
+    mkdir_p(StorageLoader.get_path(config['steersuite_record_pool']))
+    unsimulated = ParameterObject.with_no_simulation
+    Parallel.each(unsimulated, progress: 'Simulate') { |pobj| SteerSuite.simulate(pobj) }
+  end
+
+  task :clean do
+    rm_rf(StorageLoader.get_path(config['steersuite_record_pool']), secure: true)
   end
 end
 
 namespace :db do
   require 'active_record'
   require_relative 'lib/parameter_object'
-  ParameterObject.establish_connection
+  require_relative 'lib/parameter_object_relation'
 
-  task :initialize do
-    ParameterObject.initialize_database
+  task :init, :force do |_, args|
+    ParameterObject.establish_connection
+    ParameterObject.initialize_database(force: args[:force])
+    ParameterObjectRelation.initialize_database(force: args[:force])
+  end
+
+  task :init_test, :force do |_, args|
+    args.with_defaults(force: false)
+    ParameterObject.establish_connection(target: :test)
+    ParameterObject.initialize_database(force: args[:force])
+    ParameterObjectRelation.initialize_database(force: args[:force])
+  end
+
+  task :reset_test do
+    Rake::Task['db:init_test'].invoke(force: true)
   end
 
   task :reset do
-    ParameterObject.initialize_database(force: true)
+    Rake::Task['db:init'].invoke(force: true)
   end
+
+  task clean: :reset
 end

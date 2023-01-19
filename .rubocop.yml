@@ -1,0 +1,11 @@
+AllCops:
+  TargetRubyVersion: 3.0
+  Exclude:
+    - 'bin/**/*'
+    - 'db/**/*'
+    - 'node_modules/**/*'
+    - 'config/spring.rb'
+
+Bundler/OrderedGems:
+  Exclude:
+    - 'Gemfile'
