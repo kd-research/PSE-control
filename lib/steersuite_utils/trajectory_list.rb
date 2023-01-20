@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'nested_data'
+require_relative 'data_struct'
 
 module SteerSuite
   module Data

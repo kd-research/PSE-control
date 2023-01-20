@@ -62,9 +62,16 @@ class ParameterObject < ActiveRecord::Base
     rehash!
   end
 
-  def get_steersuite_obj
-    assert file && File.exist?(file)
+  def as_steersuite_obj
+    return nil unless file && File.exist?(file)
+
     SteerSuite.load(file)
+  end
+
+  def as_scenario_obj
+    return nil unless file && File.exist?(file)
+
+    SteerSuite::Scenario.from_file(file)
   end
 
   # Get string representation of parameters that can be useful in steersim calling

@@ -33,6 +33,5 @@ module SteerSuite
       pobj.safe_set_parameter(data.parameter)
       pobj.save!
     end
-
   end
 end
