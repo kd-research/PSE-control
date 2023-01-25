@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module SteerSuite
-  class SteersimBinaryHandler
+  class SteersimBinaryHandler # :nodoc:
     def initialize(file, data = nil)
       @file = file
       @data = data

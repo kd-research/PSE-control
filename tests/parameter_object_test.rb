@@ -5,6 +5,10 @@ require_relative '../lib/parameter_object'
 
 ParameterObject.establish_connection(target: :test)
 class ParameterObjectTest < Minitest::Test
+  def setup
+    #ParameterObject.initialize_database(force: true)
+  end
+
   def test_find_record_by_parameter
     skip("Not applicable currently")
     5.times do |i|

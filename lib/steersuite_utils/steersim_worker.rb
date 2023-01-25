@@ -13,11 +13,14 @@ module SteerSuite
     ##
     # Simulate a record with no simulation attached
     # return a new record with simulation performed
-    def simulate(parameter_obj)
-      env_patch = { 'SteersimRecordPath' => StorageLoader.get_absolute_path(@config['steersuite_record_pool']) }
-      command = @config['steersuite_exec_cmd']
-      workdir = @config['steersuite_exec_base']
+    def simulate(parameter_obj, dry_run: false)
+      env_patch = { 'SteersimRecordPath' => StorageLoader.get_absolute_path(CONFIG['steersuite_record_pool']) }
+      command = CONFIG['steersuite_exec_cmd']
+      workdir = CONFIG['steersuite_exec_base']
 
+      if dry_run
+        return {env_patch: env_patch, command: command, chdir: workdir}
+      end
       simulated = ''
       Open3.popen2e(env_patch, command, chdir: workdir) do |i, o, w|
         i.puts(parameter_obj.to_txt)
@@ -27,6 +30,9 @@ module SteerSuite
       SteerSuite.document(parameter_obj, simulated)
     end
 
+    ##
+    # Associate a parameter object to corresponding simulated binary
+    # parameter may be changed during simulation due to float error
     def document(pobj, filename)
       data = SteerSuite.load(filename, need_trajectory: false)
       pobj.file = filename

@@ -1,0 +1,9 @@
+past_frames                  : 14
+future_frames                : 13
+min_past_frames              : 8
+min_future_frames            : 4
+
+traj_scale                   : 2
+motion_dim                   : 2
+forecast_dim                 : 2
+play_speed                   : 1

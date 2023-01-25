@@ -17,6 +17,7 @@
     <orderEntry type="library" scope="PROVIDED" name="ast (v2.4.2, RVM: ruby-3.0.0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="bundler (v2.2.3, RVM: ruby-3.0.0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="concurrent-ruby (v1.1.10, RVM: ruby-3.0.0) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="docile (v1.4.0, RVM: ruby-3.0.0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="i18n (v1.12.0, RVM: ruby-3.0.0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="json (v2.6.3, RVM: ruby-3.0.0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="minitest (v5.16.3, RVM: ruby-3.0.0) [gem]" level="application" />
@@ -29,6 +30,9 @@
     <orderEntry type="library" scope="PROVIDED" name="rubocop (v1.43.0, RVM: ruby-3.0.0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rubocop-ast (v1.24.1, RVM: ruby-3.0.0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="ruby-progressbar (v1.11.0, RVM: ruby-3.0.0) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="simplecov (v0.22.0, RVM: ruby-3.0.0) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="simplecov-html (v0.12.3, RVM: ruby-3.0.0) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="simplecov_json_formatter (v0.1.4, RVM: ruby-3.0.0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="sqlite3 (v1.6.0, RVM: ruby-3.0.0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="tqdm (v0.4.1, RVM: ruby-3.0.0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="tzinfo (v2.0.5, RVM: ruby-3.0.0) [gem]" level="application" />
@@ -42,13 +46,16 @@
           <RakeTaskImpl id="db">
             <subtasks>
               <RakeTaskImpl description="" fullCommand="db:clean" id="clean" />
-              <RakeTaskImpl description="" fullCommand="db:initialize" id="initialize" />
+              <RakeTaskImpl description="" fullCommand="db:init" id="init" />
+              <RakeTaskImpl description="" fullCommand="db:init_test" id="init_test" />
               <RakeTaskImpl description="" fullCommand="db:reset" id="reset" />
+              <RakeTaskImpl description="" fullCommand="db:reset_test" id="reset_test" />
             </subtasks>
           </RakeTaskImpl>
           <RakeTaskImpl id="steersuite">
             <subtasks>
               <RakeTaskImpl description="" fullCommand="steersuite:auto_simulate" id="auto_simulate" />
+              <RakeTaskImpl description="" fullCommand="steersuite:clean" id="clean" />
             </subtasks>
           </RakeTaskImpl>
         </subtasks>

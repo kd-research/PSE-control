@@ -1,0 +1,76 @@
+# ------------------- General Options -------------------------
+
+description                  : AgentFormer Trajectory Generation
+<%= render 'data_global' %>
+
+# ------------------- Feature Extractor -------------------------
+
+<%= render 'feature_extractor' %>
+
+# ------------------- VAE-------------------------
+
+<%= render 'vae_spec' %>
+
+# ------------------- Model -------------------------
+
+model_id: agentformer           # internal agentformer model %w[agentformer, dlow, envpred]
+as: agent_former
+tf_version: v2                  # useless
+input_type: ['pos']
+pred_type: 'pos'
+sn_out_type: 'norm'             # useless
+
+max_train_agent: 32
+pos_concat: true
+rand_rot_scene: true            # rotate scene in training dataset
+scene_orig_all_past: true       # detect scene center for rotation
+
+tf_model_dim: 8
+tf_ff_dim: 64
+tf_nhead: 8
+tf_dropout: 0.1
+
+context_encoder:
+  nlayer: 2
+
+future_decoder:
+  nlayer: 2
+  out_mlp_dim: [512, 256]
+
+future_encoder:
+  nlayer: 2
+  out_mlp_dim: [512, 256]
+
+
+# ------------------- Training Parameters -------------------------
+
+lr                           : 1.e-4
+loss_cfg:
+  mse:
+    weight: 1.0
+  kld:
+    weight: 1.0
+    min_clip: 2.0
+  sample:
+    weight: 1.0
+    k: 20
+  zpr:
+    weight: 1.0
+  ydist:
+    weight: 1.0
+
+num_epochs                   : 50
+lr_fix_epochs                : 10
+lr_scheduler                 : 'step'
+decay_step                   : 10
+decay_gamma                  : 0.5
+print_freq                   : 20
+model_save_freq              : 5
+
+
+<% if data_source? -%>
+# ------------------- Dataset -------------------------
+
+<%= include_data_source %>
+
+<% end -%>

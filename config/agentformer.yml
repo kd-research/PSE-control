@@ -1,0 +1,7 @@
+python_path: '/home/kaidong/.conda/envs/animated-octo-potato/bin/python'
+agent_former_base: '/home/kaidong/Documents/Github/animated-octo-potato'
+
+result_dir: 'agentformer-result'
+
+training_script: 'model_train.py'
+save_latent_script: 'latent_gen.py'

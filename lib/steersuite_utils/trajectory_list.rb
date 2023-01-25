@@ -5,12 +5,12 @@ require_relative 'data_struct'
 module SteerSuite
   module Data
     class TrajectoryList < NestedData
-      def initialize(elements)
+      def initialize(elements) # :nodoc:
         super
         @default_speed_proc = ->(x, y) { (x - y).r }
       end
 
-      def speed_proc=(blk)
+      def speed_proc=(blk) # :nodoc:
         @default_speed_proc = blk
       end
 

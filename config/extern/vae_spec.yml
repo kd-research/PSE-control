@@ -1,0 +1,3 @@
+nz                           : 32
+sample_k                     : 8
+learn_prior                  : true
