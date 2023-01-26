@@ -27,7 +27,7 @@ module AgentFormer
   ##
   # Call Agentformer learn from given config
   # require config rendered by
-  def self.call_agentformer(config_render, load: :auto)
+  def self.call_agentformer(config_render, load: :auto, dry_run: false)
     tmpcfg = temp_af_config
     config_content = config_render.render('agentformer').tap do |x|
       tmpcfg.write(x)
@@ -44,10 +44,15 @@ module AgentFormer
       cmd << "--auto_load"
     when Integer
       cmd << "--start_epoch" << load
+    when :disabled
+      # no-op
+    else
+      raise ArgumentError, "Unrecognized option - load: #{load}"
     end
+    return [cmd, config_content] if dry_run
+
     log = python_exec(cmd.shelljoin, message: config_content)
 
-    return log
   end
 
   def self.call_latent_dump

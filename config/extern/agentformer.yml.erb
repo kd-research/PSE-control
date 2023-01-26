@@ -14,7 +14,7 @@ description                  : AgentFormer Trajectory Generation
 # ------------------- Model -------------------------
 
 model_id: agentformer           # internal agentformer model %w[agentformer, dlow, envpred]
-as: agent_former
+as: agent_former<%= @model_suffix %>
 tf_version: v2                  # useless
 input_type: ['pos']
 pred_type: 'pos'
