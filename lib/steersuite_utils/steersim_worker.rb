@@ -14,15 +14,22 @@ module SteerSuite
     # Simulate a record with no simulation attached
     # return a new record with simulation performed
     def simulate(parameter_obj, dry_run: false)
-      env_patch = { 'SteersimRecordPath' => StorageLoader.get_absolute_path(CONFIG['steersuite_record_pool']) }
+      steersim_record_path = StorageLoader.get_absolute_path(CONFIG['steersuite_record_pool'])
+      ld_library_path_arr = ENV['LD_LIBRARY_PATH'].split(':')
+      ld_library_path_arr << File.join(CONFIG['steersuite_exec_base'], '..', 'lib')
+      ld_library_path_arr << File.join(CONFIG['steersuite_exec_base'], 'lib')
+      ld_library_path = ld_library_path_arr.join(':')
+      env_patch = {
+        'SteersimRecordPath' => steersim_record_path,
+        'LD_LIBRARY_PATH' => ld_library_path
+      }
       command = CONFIG['steersuite_exec_cmd']
       workdir = CONFIG['steersuite_exec_base']
 
-      if dry_run
-        return {env_patch: env_patch, command: command, chdir: workdir}
-      end
+      return { env_patch: env_patch, command: command, chdir: workdir } if dry_run
+
       simulated = ''
-      Open3.popen2e(env_patch, command, chdir: workdir) do |i, o, w|
+      Open3.popen2e(env_patch, command, chdir: workdir) do |i, o, _|
         i.puts(parameter_obj.to_txt)
         o.expect("Finished scenario 0\n")
         simulated = o.gets.chomp
@@ -30,6 +37,7 @@ module SteerSuite
       SteerSuite.document(parameter_obj, simulated)
     end
 
+    private
     ##
     # Associate a parameter object to corresponding simulated binary
     # parameter may be changed during simulation due to float error
