@@ -20,10 +20,14 @@ module AgentFormer
   # Agentformer must be run under it's project root
   # This function ensures working directory
   def self.agentformer_exec(cmd, message: nil)
+    print '\r'
     pid = spawn(cmd, chdir: CONFIG['agent_former_base'])
     Process.wait(pid)
 
-    warn(message) unless $CHILD_STATUS&.exitstatus.zero?
+    unless $CHILD_STATUS&.success?
+      warn(message)
+      raise "Agentformer program exited with error code #{$CHILD_STATUS&.exitstatus}"
+    end
   end
   private_class_method :temp_af_config, :agentformer_exec
 
@@ -55,7 +59,6 @@ module AgentFormer
     return [cmd, config_content] if dry_run
 
     log = agentformer_exec(cmd.shelljoin, message: config_content)
-
   end
 
   def self.call_latent_dump

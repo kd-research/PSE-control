@@ -11,9 +11,7 @@ namespace :steersuite do
   config = YAML.safe_load(File.open('config/steersuite.yml'))
 
   task auto_simulate: :clean do
-    mkdir_p(StorageLoader.get_path(config['steersuite_record_pool']))
-    unsimulated = ParameterObject.with_no_simulation
-    Parallel.each(unsimulated, progress: 'Simulate') { |pobj| SteerSuite.simulate(pobj) }
+    SteerSuite.simulate_unsimulated
   end
 
   task :clean do

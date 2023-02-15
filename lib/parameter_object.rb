@@ -13,6 +13,7 @@ module ParameterObjectActions
       t.string :file
       t.string :split
       t.string :state
+      t.boolean :active_generated, default: false
     end
   end
 
@@ -32,9 +33,9 @@ end
 class ParameterObject < ActiveRecord::Base
   self.table_name = 'parameters'
 
-  ALL_SPLIT = %w[split_nil train cross_valid test prediction].freeze
+  ALL_SPLIT = %w[split_nil train cross_valid test prediction active_train].freeze
   enum split: ALL_SPLIT.zip(ALL_SPLIT).to_h
-  ALL_STATE = %w[state_nil raw processed].freeze
+  ALL_STATE = %w[state_nil raw processed rot].freeze
   enum state: ALL_STATE.zip(ALL_STATE).to_h
 
   has_one :as_predictee_relation, -> { where(relation: :prediction) },
@@ -44,6 +45,14 @@ class ParameterObject < ActiveRecord::Base
   has_many :as_predictor_relation, -> { where(relation: :prediction) },
            class_name: 'ParameterObjectRelation', foreign_key: :from_id
   has_many :predicted_as, through: :as_predictor_relation, source: :to
+
+  has_one :as_processee_relation, -> { where(relation: :process) },
+          class_name: 'ParameterObjectRelation', foreign_key: :to_id
+  has_one :processed_from, through: :as_processee_relation, source: :from
+
+  has_many :as_processor_relation, -> { where(relation: :process) },
+           class_name: 'ParameterObjectRelation', foreign_key: :from_id
+  has_many :processed_in, through: :as_processor_relation, source: :to
 
   scope :with_no_simulation, -> { where(file: nil).or(where(file: '')) }
 
@@ -62,12 +71,18 @@ class ParameterObject < ActiveRecord::Base
     rehash!
   end
 
+  ##
+  # Steersuite object is a raw data object read from
+  # steersim binaries
   def as_steersuite_obj
     return nil unless file && File.exist?(file)
 
     SteerSuite.load(file)
   end
 
+  ##
+  # Scenario object is a higher level scenario processor
+  # support easy scenario modifications
   def as_scenario_obj
     return nil unless file && File.exist?(file)
 

@@ -1,0 +1,43 @@
+# ------------------- General Options -------------------------
+
+description                  : AgentFormer Trajectory Generation
+<%= render "data_global" %>
+
+# ------------------- Feature Extractor -------------------------
+
+<%= render "feature_extractor" %>
+
+# ------------------- VAE-------------------------
+
+<%= render "vae_spec" %>
+
+# ------------------- Model -------------------------
+
+model_id: dlow           # internal agentformer model %w[agentformer, dlow, envpred]
+pred_cfg: <%= agentformer_model_name %>
+pred_epoch: 30
+qnet_mlp: [512, 256]
+share_eps: true
+train_w_mean: true
+
+
+# ------------------- Training Parameters -------------------------
+
+lr                           : 1.e-4
+loss_cfg:
+  kld:
+    weight: 0.1
+    min_clip: 10
+  diverse:
+    weight: 20
+    d_scale: 10
+  recon:
+    weight: 5.0
+
+num_epochs                   : 50
+lr_fix_epochs                : 10
+lr_scheduler: 'step'
+decay_step: 5
+decay_gamma: 0.5
+print_freq                   : 20
+model_save_freq              : 5

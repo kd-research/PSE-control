@@ -12,12 +12,18 @@ module ParameterObjectRelationActions
   end
 end
 class ParameterObjectRelation < ActiveRecord::Base
+  after_destroy :destroy_tos
   self.table_name = 'parameter_relations'
 
-  ALL_RELATION = %w[relation_nil prediction augmentation].freeze
+  ALL_RELATION = %w[relation_nil prediction augmentation process].freeze
   enum relation: ALL_RELATION.zip(ALL_RELATION).to_h
   belongs_to :from, class_name: 'ParameterObject'
   belongs_to :to, class_name: 'ParameterObject'
 
   extend ParameterObjectRelationActions
+
+  private
+  def destroy_tos
+    to.destroy
+  end
 end

@@ -27,7 +27,7 @@ class Array
     if $target == :test
       self.take(100).tqdm(leave: true)
     else
-      self.tqdm(leave: true)
+      self.take(100).tqdm(leave: true)
     end
   end
 end
@@ -44,11 +44,4 @@ get_binary_filenames(dirname).debug_sample.each do |fname|
   fullpath = File.join(dirname, fname)
   data = SteerSuite.load(fullpath, need_trajectory: false)
   save_pobj(fullpath, data.parameter, :cross_valid, :processed)
-end
-
-dirname = '/home/kaidong/RubymineProjects/ActiveLoop/storage/steersimRecord-pred'
-get_binary_filenames(dirname).debug_sample.each do |fname|
-  fullpath = File.join(dirname, fname)
-  data = SteerSuite.load(fullpath, need_trajectory: false)
-  save_pobj(fullpath, data.parameter, :prediction, :raw)
 end

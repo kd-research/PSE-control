@@ -30,7 +30,8 @@ module SteerSuite
 
     def to_file(dirname)
       filename = File.join(dirname, "#{@elements.filename}.bin")
-      SteerSuite.dump(filename, data)
+      SteerSuite.dump(filename, @elements)
+      filename
     end
 
     def inspect

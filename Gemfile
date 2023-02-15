@@ -10,6 +10,7 @@ gem 'parallel'
 gem 'rake'
 gem 'yaml'
 gem 'sqlite3'
+gem 'pg'
 
 group :development do
   gem 'tqdm'

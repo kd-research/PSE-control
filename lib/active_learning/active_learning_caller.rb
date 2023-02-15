@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
+require 'English'
+require 'csv'
+require 'open3'
+require 'shellwords'
 require_relative '../agent_former'
+require_relative '../parameter_object'
 
 ##
 # step 1:
@@ -11,5 +16,68 @@ require_relative '../agent_former'
 # step 2:
 # Train AgentFormer
 module ActiveLearningCaller
+  CONFIG = YAML.safe_load(File.read('config/active_learning.yml')).freeze
+  AF_CONFIG = YAML.safe_load(File.read('config/agentformer.yml')).freeze
+  private_constant :CONFIG
+  ##
+  # Active learning model require an arg as working directory,
+  # and PYTHON_PATH set to the code base.
+  # needs training/validating dataset inside working dirertory
+  # and will save training weights in the same directory under
+  # best_valid checkpoint file
+  def self.keras_exec(cmd, capture: false)
+    env_patch = {
+      'PYTHON_PATH' => "#{ENV['PYTHON_PATH']}:#{CONFIG['active_learning_keras_base']}"
+    }
+    if capture
+      out, _ = Open3.capture2(env_patch, cmd, chdir: CONFIG['active_learning_keras_base'])
+      out
+    else
+      pid = spawn(env_patch, cmd, chdir: CONFIG['active_learning_keras_base'])
+      Process.wait(pid)
+      raise "Subprogram exited with error code #{$CHILD_STATUS.exitstatus}" unless $CHILD_STATUS&.success?
+    end
+
+  end
+
+  def self.working_dir
+    if CONFIG['with_agentformer']
+      agentformer_base_dir = StorageLoader.get_absolute_path AF_CONFIG['result_dir']
+      File.join(agentformer_base_dir, 'agent_former', 'latents')
+    else
+      StorageLoader.get_absolute_path CONFIG['working_directory']
+    end
+  end
+
+  def self.keras_train
+    cmd = []
+    cmd << CONFIG['python_path']
+    cmd << 'keras_train.py'
+    cmd << working_dir
+
+    keras_exec cmd.shelljoin
+  end
+
+  def self.keras_sample_train
+    cmd = []
+    cmd << CONFIG['python_path']
+    cmd << 'keras_sampl.py'
+    cmd << working_dir
+    cmd << '-c' << CONFIG['sample_amount']['train']
+    cmd << '--parsable'
+
+    samples = keras_exec(cmd.shelljoin, capture: true)
+    CSV.parse(samples, converters: :all).each do |pararmeter|
+      # @parameter : An array of size 9
+      pararmeter.map! { |x| x.between?(0, 1) ? x : rand }
+      obj = ParameterObject.new
+      obj.safe_set_parameter(pararmeter)
+      obj.active_generated = true
+      obj.split = :train
+      obj.state = :raw
+      obj.save!
+    end
+
+  end
 
 end

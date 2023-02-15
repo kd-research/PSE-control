@@ -3,6 +3,8 @@
 require 'yaml'
 require 'open3'
 require 'expect'
+require 'fileutils'
+require 'parallel'
 
 require_relative '../storage_loader'
 require_relative '../parameter_object'
@@ -15,7 +17,7 @@ module SteerSuite
     # return a new record with simulation performed
     def simulate(parameter_obj, dry_run: false)
       steersim_record_path = StorageLoader.get_absolute_path(CONFIG['steersuite_record_pool'])
-      ld_library_path_arr = ENV['LD_LIBRARY_PATH'].split(':')
+      ld_library_path_arr = ENV['LD_LIBRARY_PATH']&.split(':') || []
       ld_library_path_arr << File.join(CONFIG['steersuite_exec_base'], '..', 'lib')
       ld_library_path_arr << File.join(CONFIG['steersuite_exec_base'], 'lib')
       ld_library_path = ld_library_path_arr.join(':')
@@ -37,7 +39,16 @@ module SteerSuite
       SteerSuite.document(parameter_obj, simulated)
     end
 
-    private
+    def simulate_unsimulated
+      FileUtils.mkdir_p(StorageLoader.get_path(CONFIG['steersuite_record_pool']))
+      unsimulated = ParameterObject.with_no_simulation
+      puts "Going to simulate #{unsimulated.size} scenarios"
+      Parallel.each(unsimulated) do |pobj|
+        SteerSuite.simulate(pobj)
+        print '.'
+      end
+    end
+
     ##
     # Associate a parameter object to corresponding simulated binary
     # parameter may be changed during simulation due to float error
