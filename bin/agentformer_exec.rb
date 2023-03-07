@@ -17,18 +17,18 @@ def init_feeding
     Dir.glob("*.bin", base: dirname)
   end
 
-  dirname = '/home/kaidong/RubymineProjects/ActiveLoop/storage/steersimRecord-train'
+  dirname = './storage/steersimRecord-train'
   get_binary_filenames(dirname).tqdm.each do |fname|
-    pobj = ParameterObject.new(split: :train, state: :processed)
+    pobj = ParameterObject.new(split: :train, state: :processed, label: 'budget-ground')
     pobj.label = "budget-ground"
     fullpath = File.join(dirname, fname)
     SteerSuite.document(pobj, fullpath)
     pobj.save!
   end
 
-  dirname = '/home/kaidong/RubymineProjects/ActiveLoop/storage/steersimRecord-cv'
+  dirname = './storage/steersimRecord-cv'
   get_binary_filenames(dirname).tqdm.each do |fname|
-    pobj = ParameterObject.new(split: :cross_valid, state: :processed)
+    pobj = ParameterObject.new(split: :cross_valid, state: :processed, label: 'budget-ground')
     pobj.label = "budget-ground"
     fullpath = File.join(dirname, fname)
     SteerSuite.document(pobj, fullpath)
@@ -45,7 +45,7 @@ def cycle_train(source_label:, target_label:nil, finalize: false)
   renderer = AgentFormer.renderer_instance
   renderer.set_data_source(train_files, valid_files, test_files)
   start_time = Time.now
-  AgentFormer.call_agentformer(renderer)
+  puts AgentFormer.call_agentformer(renderer)
   puts "Agentformer #{source_label} training use #{Time.now - start_time} seconds"
   start_time = Time.now
   AgentFormer.call_latent_dump
@@ -69,6 +69,8 @@ end
 
 batch_labels = []
 (1..9).each {|i| batch_labels << "speedtest-batch-#{i}"}
+ParameterObject.where(label: batch_labels).delete_all
+
 batch_labels.each_index do |idx|
   cycle_train(source_label: batch_labels[...idx], target_label: batch_labels[idx])
 end

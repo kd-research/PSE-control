@@ -84,7 +84,7 @@ module SteerSuite
     # parameter may be changed during simulation due to float error
     def document(pobj, filename)
       data = SteerSuite.load(filename, need_trajectory: false)
-      pobj.file = filename
+      pobj.file = File.absolute_path(filename)
       pobj.safe_set_parameter(data.parameter)
       pobj.save!
     end

@@ -10,7 +10,10 @@ gem 'parallel'
 gem 'rake'
 gem 'yaml'
 gem 'sqlite3'
-gem 'pg'
+
+unless ENV['USER'] =~ /hpcguest/
+  gem 'pg'
+end
 
 group :development do
   gem 'tqdm'

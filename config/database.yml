@@ -1,11 +1,11 @@
 default: &DEFAULT
-  adapter: postgresql
-  database: storage_parameter
-  username: myapp
-  password: password1
-  pool: 50
+  adapter: sqlite3
+  database: "storage/parameters.sqlite3"
+  #username: myapp
+  #password: password1
+  pool: 1
   timeout: 1000
-  host: localhost
+  #host: localhost
 
 test:
   <<: *DEFAULT

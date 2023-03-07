@@ -41,8 +41,7 @@ module AgentFormer
     end
 
     config_id = File.basename(tmpcfg.path, ".yml")
-    cmd = []
-    cmd << CONFIG['python_path']
+    cmd = CONFIG['python_path'].shellsplit
     cmd << "model_train.py"
     cmd << "--cfg" << config_id
     case load
@@ -55,7 +54,7 @@ module AgentFormer
     else
       raise ArgumentError, "Unrecognized option - load: #{load}"
     end
-    return [cmd, config_content] if dry_run
+    return [cmd.shelljoin, config_content] if dry_run
 
     log = agentformer_exec(cmd.shelljoin, message: config_content)
   end

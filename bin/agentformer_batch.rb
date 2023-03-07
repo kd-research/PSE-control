@@ -36,5 +36,5 @@ def cycle_train(source_label, num_sample)
 end
 
 source_label = 'budget-ground'
-sample_nums = (2000..4000).step(500)
+sample_nums = (500..4000).step(500)
 sample_nums.each { |s| cycle_train(source_label, s) }

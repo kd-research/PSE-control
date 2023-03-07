@@ -1,0 +1,18 @@
+#!/bin/bash
+
+cat << HERE | sbatch
+#!/bin/bash
+
+#SBATCH --job-name=batch-kaidong
+#SBATCH --output=job.%j.out
+#SBATCH --ntasks=10
+#SBATCH --nodes=1
+#SBATCH --partition=gpu
+#SBATCH --gres=gpu:1
+#SBATCH --constraint="gtx1080ti|rtx2080"
+
+module load singularity || true
+
+set -xe
+ruby $1
+HERE
