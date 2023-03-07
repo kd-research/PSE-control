@@ -11,9 +11,13 @@ module AgentFormer
   CONFIG = YAML.safe_load(File.read("config/agentformer.yml")).freeze
   private_constant :CONFIG
 
-  def self.temp_af_config
+  def self.temp_af_config(preserve: false)
     af_config_path = File.expand_path('cfg/tmp', CONFIG['agent_former_base'])
-    Tempfile.new(%w[auto-generated- .yml], tmpdir = af_config_path)
+    if preserve
+      Tempfile.create(%w[auto-generated- .yml], tmpdir = af_config_path)
+    else
+      Tempfile.new(%w[auto-generated- .yml], tmpdir = af_config_path)
+    end
   end
 
   ##

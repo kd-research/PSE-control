@@ -52,8 +52,7 @@ module ActiveLearningCaller
   end
 
   def self.keras_train
-    cmd = []
-    cmd << CONFIG['python_path']
+    cmd = CONFIG['python_path'].shellsplit
     cmd << 'keras_train.py'
     cmd << working_dir
 
