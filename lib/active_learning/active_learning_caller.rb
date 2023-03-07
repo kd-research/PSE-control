@@ -43,7 +43,9 @@ module ActiveLearningCaller
   def self.working_dir
     if CONFIG['with_agentformer']
       agentformer_base_dir = StorageLoader.get_absolute_path AF_CONFIG['result_dir']
-      File.join(agentformer_base_dir, 'agent_former', 'latents')
+      agentformer_model_yaml = AgentFormer.renderer_instance.render('agentformer')
+      agentformer_model_dir = YAML.safe_load(agentformer_model_yaml)['as']
+      File.join(agentformer_base_dir, agentformer_model_dir, 'latents')
     else
       StorageLoader.get_absolute_path CONFIG['working_directory']
     end
@@ -58,7 +60,7 @@ module ActiveLearningCaller
     keras_exec cmd.shelljoin
   end
 
-  def self.keras_sample_train
+  def self.keras_sample_train(with_label: nil)
     cmd = []
     cmd << CONFIG['python_path']
     cmd << 'keras_sampl.py'
@@ -75,6 +77,7 @@ module ActiveLearningCaller
       obj.active_generated = true
       obj.split = :train
       obj.state = :raw
+      obj.label = with_label
       obj.save!
     end
 

@@ -2,7 +2,6 @@
 
 require 'minitest/autorun'
 require_relative '../lib/parameter_object'
-require_relative '../lib/parameter_object_relation'
 
 
 

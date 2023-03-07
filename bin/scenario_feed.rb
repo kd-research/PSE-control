@@ -1,8 +1,8 @@
 require 'tqdm'
 
 require_relative '../lib/steer_suite'
-require_relative '../lib/parameter_object'
-require_relative '../lib/parameter_object_relation'
+require_relative '../lib/parameter_record/parameter_object'
+require_relative '../lib/parameter_record/parameter_object_relation'
 
 $target = :default
 ParameterObject.establish_connection(target: $target)

@@ -22,7 +22,6 @@ end
 namespace :db do
   require 'active_record'
   require_relative 'lib/parameter_object'
-  require_relative 'lib/parameter_object_relation'
 
   task :init, :force do |_, args|
     ParameterObject.establish_connection

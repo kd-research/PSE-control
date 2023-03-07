@@ -20,7 +20,6 @@ module AgentFormer
   # Agentformer must be run under it's project root
   # This function ensures working directory
   def self.agentformer_exec(cmd, message: nil)
-    print '\r'
     pid = spawn(cmd, chdir: CONFIG['agent_former_base'])
     Process.wait(pid)
 

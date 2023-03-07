@@ -31,12 +31,42 @@ module SteerSuite
       return { env_patch: env_patch, command: command, chdir: workdir } if dry_run
 
       simulated = ''
-      Open3.popen2e(env_patch, command, chdir: workdir) do |i, o, _|
+      r, w = IO.pipe
+      Open3.popen2e(env_patch, command, chdir: workdir, 5 => w) do |i, o, _|
+        w.close
         i.puts(parameter_obj.to_txt)
         o.expect("Finished scenario 0\n")
         simulated = o.gets.chomp
       end
+      benchmark_log = r.read
+
       SteerSuite.document(parameter_obj, simulated)
+      BenchmarkLogs.new(parameter_object: parameter_obj, log: benchmark_log).save!
+    end
+
+    def exec_simulate(doc, dry_run: false)
+      steersim_record_path = StorageLoader.get_absolute_path(CONFIG['steersuite_record_pool'])
+      ld_library_path_arr = ENV['LD_LIBRARY_PATH']&.split(':') || []
+      ld_library_path_arr << File.join(CONFIG['steersuite_exec_base'], '..', 'lib')
+      ld_library_path_arr << File.join(CONFIG['steersuite_exec_base'], 'lib')
+      ld_library_path = ld_library_path_arr.join(':')
+      env_patch = {
+        'SteersimRecordPath' => steersim_record_path,
+        'LD_LIBRARY_PATH' => ld_library_path
+      }
+      command = CONFIG['steersuite_exec_cmd']
+      workdir = CONFIG['steersuite_exec_base']
+
+      return { env_patch: env_patch, command: command, chdir: workdir } if dry_run
+
+      simulated = ''
+      Open3.popen2e(env_patch, command, chdir: workdir) do |i, o, _|
+        i.puts(doc)
+        o.expect("Finished scenario 0\n")
+        simulated = o.gets.chomp
+      end
+
+      simulated
     end
 
     def simulate_unsimulated

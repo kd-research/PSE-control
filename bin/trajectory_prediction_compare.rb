@@ -1,5 +1,4 @@
 require_relative '../lib/parameter_object'
-require_relative '../lib/parameter_object_relation'
 require_relative '../lib/rplot'
 
 ParameterObject.establish_connection

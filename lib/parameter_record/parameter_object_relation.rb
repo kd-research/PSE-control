@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'active_record'
-require_relative './parameter_object'
 module ParameterObjectRelationActions
   def initialize_database(force: false)
     connection.create_table :parameter_relations, force: force do |t|
@@ -11,6 +9,7 @@ module ParameterObjectRelationActions
     end
   end
 end
+
 class ParameterObjectRelation < ActiveRecord::Base
   after_destroy :destroy_tos
   self.table_name = 'parameter_relations'

@@ -59,7 +59,7 @@ loss_cfg:
   ydist:
     weight: 1.0
 
-num_epochs                   : 10
+num_epochs                   : <%= @num_epochs || 20 %>
 lr_fix_epochs                : 5
 lr_scheduler                 : 'step'
 decay_step                   : 10

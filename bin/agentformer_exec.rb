@@ -5,20 +5,12 @@ require 'fileutils'
 require_relative '../lib/active_learning/active_learning_caller'
 require_relative '../lib/storage_loader'
 require_relative '../lib/agent_former'
-require_relative '../lib/parameter_object'
-require_relative '../lib/parameter_object_relation'
 require_relative '../lib/steer_suite'
-
-
+require_relative '../lib/parameter_object'
 
 ParameterObject.establish_connection
 
 # Establish connection and reset the database
-def initialize_db
-  ParameterObject.initialize_database(force: true)
-  ParameterObjectRelation.initialize_database(force: true)
-end
-
 # Initialize database with random 500 training samples
 def init_feeding
   def get_binary_filenames(dirname)
@@ -26,8 +18,9 @@ def init_feeding
   end
 
   dirname = '/home/kaidong/RubymineProjects/ActiveLoop/storage/steersimRecord-train'
-  get_binary_filenames(dirname).sample(1000).tqdm.each do |fname|
+  get_binary_filenames(dirname).tqdm.each do |fname|
     pobj = ParameterObject.new(split: :train, state: :processed)
+    pobj.label = "budget-ground"
     fullpath = File.join(dirname, fname)
     SteerSuite.document(pobj, fullpath)
     pobj.save!
@@ -36,34 +29,48 @@ def init_feeding
   dirname = '/home/kaidong/RubymineProjects/ActiveLoop/storage/steersimRecord-cv'
   get_binary_filenames(dirname).tqdm.each do |fname|
     pobj = ParameterObject.new(split: :cross_valid, state: :processed)
+    pobj.label = "budget-ground"
     fullpath = File.join(dirname, fname)
     SteerSuite.document(pobj, fullpath)
     pobj.save!
   end
 end
 
-def cycle_train(finalize: false)
-  train_files = ParameterObject.where(split: :train, state: :processed).pluck(:file)
-  valid_files = ParameterObject.where(split: :cross_valid, state: :processed).pluck(:file)
+$budget_base = ParameterObject.where(split: :train, state: :processed, label: 'budget-ground').limit(1000).pluck(:file)
+def cycle_train(source_label:, target_label:nil, finalize: false)
+  train_files = ParameterObject.where(split: :train, state: :processed, label: source_label).pluck(:file) + $budget_base
+  valid_files = ParameterObject.where(split: :cross_valid, state: :processed, label: 'budget-ground').pluck(:file)
   test_files = []
 
   renderer = AgentFormer.renderer_instance
   renderer.set_data_source(train_files, valid_files, test_files)
+  start_time = Time.now
   AgentFormer.call_agentformer(renderer)
+  puts "Agentformer #{source_label} training use #{Time.now - start_time} seconds"
+  start_time = Time.now
   AgentFormer.call_latent_dump
-
+  puts "Agentformer #{source_label} latent dump use #{Time.now - start_time} seconds"
+  start_time = Time.now
   ActiveLearningCaller.keras_train
+  puts "Agentformer #{source_label} keras train use #{Time.now - start_time} seconds"
   if finalize
-    FileUtils.rm_rf(StorageLoader.get_path('agentformer-result'))
+    # FileUtils.rm_rf(StorageLoader.get_path('agentformer-result'))
     return
   end
 
-  ActiveLearningCaller.keras_sample_train
+  start_time = Time.now
+  ActiveLearningCaller.keras_sample_train(with_label: target_label)
   SteerSuite.simulate_unsimulated
   SteerSuite.process_unprocessed
+  puts "Agentformer #{source_label.last || "initial"} sample process use #{Time.now - start_time} seconds"
+
+  renderer.instance_variable_set :@num_epochs, sprintf('%06d', 2)
 end
 
-initialize_db
-init_feeding
-9.times { cycle_train(finalize: false) }
-cycle_train(finalize: true)
+batch_labels = []
+(1..9).each {|i| batch_labels << "speedtest-batch-#{i}"}
+batch_labels.each_index do |idx|
+  cycle_train(source_label: batch_labels[...idx], target_label: batch_labels[idx])
+end
+
+cycle_train(source_label: batch_labels, finalize: true)

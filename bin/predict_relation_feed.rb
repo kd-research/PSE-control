@@ -2,7 +2,6 @@
 
 require 'matrix'
 require_relative '../lib/parameter_object'
-require_relative '../lib/parameter_object_relation'
 
 ParameterObject.establish_connection
 ParameterObjectRelation.delete_all

@@ -2,7 +2,7 @@
 
 require 'tqdm'
 require 'matrix'
-require_relative '../lib/parameter_object'
+require_relative '../lib/parameter_record/parameter_object'
 
 def parse_matrix(filename)
   data = File.readlines(filename).map do |line|

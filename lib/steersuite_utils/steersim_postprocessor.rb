@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 require_relative 'trajectory_list'
 require_relative '../parameter_object'
-require_relative '../parameter_object_relation'
 module SteerSuite
   module SteersimPostprocessor
     def process_document(raw_doc)
