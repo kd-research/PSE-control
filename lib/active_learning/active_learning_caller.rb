@@ -60,8 +60,7 @@ module ActiveLearningCaller
   end
 
   def self.keras_sample_train(with_label: nil)
-    cmd = []
-    cmd << CONFIG['python_path']
+    cmd = CONFIG['python_path'].shellsplit
     cmd << 'keras_sampl.py'
     cmd << working_dir
     cmd << '-c' << CONFIG['sample_amount']['train']

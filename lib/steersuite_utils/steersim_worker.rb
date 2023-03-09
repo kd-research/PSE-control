@@ -44,6 +44,8 @@ module SteerSuite
       BenchmarkLogs.new(parameter_object: parameter_obj, log: benchmark_log).save!
     end
 
+    # Take steersim processing a string document and return
+    # the path of generated steersim binary record
     def exec_simulate(doc, dry_run: false)
       steersim_record_path = StorageLoader.get_absolute_path(CONFIG['steersuite_record_pool'])
       ld_library_path_arr = ENV['LD_LIBRARY_PATH']&.split(':') || []
