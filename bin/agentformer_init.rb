@@ -1,0 +1,6 @@
+require_relative '../lib/parameter_object'
+
+ParameterObject.establish_connection
+#ParameterObject.initialize_database
+#ParameterObjectRelation.initialize_database
+BenchmarkLogs.initialize_database
