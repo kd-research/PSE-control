@@ -5,7 +5,8 @@ module ParameterObjectActions # :nodoc:
     connection.create_table :parameters, force: force do |t|
       t.json :parameters, required: true
       t.string :p_hash, index: true
-      t.string :file, :label
+      t.string :file
+      t.string :label 
       t.string :split, :state
       t.boolean :active_generated, default: false
     end
