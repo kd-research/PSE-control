@@ -4,6 +4,8 @@ require 'English'
 require 'csv'
 require 'open3'
 require 'shellwords'
+require_relative '../snapshot'
+require_relative '../config_loader'
 require_relative '../agent_former'
 require_relative '../parameter_object'
 
@@ -16,9 +18,11 @@ require_relative '../parameter_object'
 # step 2:
 # Train AgentFormer
 module ActiveLearningCaller
-  CONFIG = YAML.safe_load(File.read('config/active_learning.yml')).freeze
-  AF_CONFIG = YAML.safe_load(File.read('config/agentformer.yml')).freeze
-  private_constant :CONFIG
+  extend ConfigLoader
+  CONFIG = load_config('config/active_learning.yml')
+  AF_CONFIG = load_config('config/agentformer.yml')
+  PROJECT_BASE = Snapshot.make_snapshot(CONFIG['active_learning_keras_base'])
+  private_constant :CONFIG, :AF_CONFIG, :PROJECT_BASE
   ##
   # Active learning model require an arg as working directory,
   # and PYTHON_PATH set to the code base.
@@ -27,13 +31,13 @@ module ActiveLearningCaller
   # best_valid checkpoint file
   def self.keras_exec(cmd, capture: false)
     env_patch = {
-      'PYTHON_PATH' => "#{ENV['PYTHON_PATH']}:#{CONFIG['active_learning_keras_base']}"
+      'PYTHON_PATH' => "#{ENV['PYTHON_PATH']}:#{PROJECT_BASE}"
     }
     if capture
-      out, _ = Open3.capture2(env_patch, cmd, chdir: CONFIG['active_learning_keras_base'])
+      out, _ = Open3.capture2(env_patch, cmd, chdir: PROJECT_BASE)
       out
     else
-      pid = spawn(env_patch, cmd, chdir: CONFIG['active_learning_keras_base'])
+      pid = spawn(env_patch, cmd, chdir: PROJECT_BASE)
       Process.wait(pid)
       raise "Subprogram exited with error code #{$CHILD_STATUS.exitstatus}" unless $CHILD_STATUS&.success?
     end

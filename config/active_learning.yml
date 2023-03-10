@@ -1,5 +1,10 @@
+% if ENV['USER'] =~ /hpcguest/
 python_path: 'singularity exec --nv /home/hpc/hpcguest4/sifs/keras.sif /opt/conda/envs/tf2/bin/python3'
 active_learning_keras_base: "/home/hpc/hpcguest4/ActiveLoopProject/pkl-keras-train"
+% else
+python_path: '/home/kaidong/.conda/envs/tf2/bin/python'
+active_learning_keras_base: "/home/kaidong/PycharmProjects/pkl-keras-train"
+% end
 with_agentformer: true
 #working_directory: "/home/kaidong/PycharmProjects/pkl-keras-train"
 sample_amount:

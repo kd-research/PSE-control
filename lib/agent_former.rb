@@ -5,14 +5,17 @@ require 'yaml'
 require 'tempfile'
 require 'open3'
 require 'shellwords'
+require_relative 'config_loader'
 require_relative 'active_learning/agent_former_config_renderer'
 
 module AgentFormer
-  CONFIG = YAML.safe_load(File.read("config/agentformer.yml")).freeze
-  private_constant :CONFIG
+  extend ConfigLoader
+  CONFIG = load_config('config/agentformer.yml')
+  PROJECT_BASE = Snapshot.make_snapshot(CONFIG['agent_former_base'])
+  private_constant :CONFIG, :PROJECT_BASE
 
   def self.temp_af_config(preserve: false)
-    af_config_path = File.expand_path('cfg/tmp', CONFIG['agent_former_base'])
+    af_config_path = File.expand_path('cfg/tmp', PROJECT_BASE)
     if preserve
       Tempfile.create(%w[auto-generated- .yml], tmpdir = af_config_path)
     else
@@ -24,7 +27,7 @@ module AgentFormer
   # Agentformer must be run under it's project root
   # This function ensures working directory
   def self.agentformer_exec(cmd, message: nil)
-    pid = spawn(cmd, chdir: CONFIG['agent_former_base'])
+    pid = spawn(cmd, chdir: PROJECT_BASE)
     Process.wait(pid)
 
     unless $CHILD_STATUS&.success?
