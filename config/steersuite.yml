@@ -1,4 +1,9 @@
+% if ENV['USER'] =~ /hpcguest/
 steersuite_exec_base: "/home/hpc/hpcguest4/ActiveLoopProject/SteerSuite-P2/build/bin"
 steersuite_exec_cmd: "singularity exec --env LD_LIBRARY_PATH=$LD_LIBRARY_PATH --nv /home/hpc/hpcguest4/sifs/hlsix-220922.sif ./steersim -commandline -config minimal.xml"
+% else
+steersuite_exec_base: "/home/kaidong/SteerSuite-P2"
+steersuite_exec_cmd: "./steersim -commandline -config minimal.xml"
+%end
 steersuite_record_pool: "steersimRecord-tmp"
 steersuite_process_pool: "steersimRecord-tmp-processed"

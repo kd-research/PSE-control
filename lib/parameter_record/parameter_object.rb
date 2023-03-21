@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module ParameterObjectActions # :nodoc:
+module ParameterObjectActions
   def initialize_database(force: false)
     connection.create_table :parameters, force: force do |t|
       t.json :parameters, required: true
@@ -12,12 +12,11 @@ module ParameterObjectActions # :nodoc:
     end
   end
 
-  def establish_connection(target: :default)
-    return if ActiveRecord::Base.connected?
-
-    db_config = YAML.safe_load(File.open('config/database.yml'), aliases: true)
-    db_config.symbolize_keys!
-    ActiveRecord::Base.establish_connection(db_config[target])
+  # <b>DEPRECATED:</b> Please use <tt>ParameterDatabase.establish_connection</tt> instead.
+  def establish_connection(...)
+    warn '[DEPRECATION] `ParameterObject.establish_connection` is deprecated.'\
+      ' Please use `ParameterDatabase.establish_connection` instead.'
+    ParameterDatabase.establish_connection(...)
   end
 end
 

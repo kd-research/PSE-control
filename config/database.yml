@@ -1,4 +1,5 @@
 default: &DEFAULT
+% if ENV['USER'] =~ /hpcguest/
   adapter: sqlite3
   #database: ":memory:"
   database: "storage/parameters.sqlite3"
@@ -7,6 +8,15 @@ default: &DEFAULT
   pool: 1
   timeout: 1000
   #host: localhost
+% else
+  adapter: postgresql
+  database: storage_parameter
+  username: myapp
+  password: password1
+  pool: 50
+  timeout: 1000
+  host: localhost
+% end
 
 test:
   <<: *DEFAULT
