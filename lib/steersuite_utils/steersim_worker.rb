@@ -12,6 +12,7 @@ require_relative '../steer_suite'
 
 module SteerSuite
   module SteerSuiteWorkerHelper
+
     ##
     # Simulate a record with no simulation attached
     # return a new record with simulation performed

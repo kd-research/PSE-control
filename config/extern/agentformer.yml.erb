@@ -65,7 +65,7 @@ lr_scheduler                 : 'step'
 decay_step                   : 10
 decay_gamma                  : 0.5
 print_freq                   : 100
-model_save_freq              : 5
+model_save_freq              : <%= [@num_epochs&.to_i, 5].compact.min %>
 
 
 <% if data_source? -%>

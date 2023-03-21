@@ -4,7 +4,7 @@ cat << HERE | sbatch
 #!/bin/bash
 
 #SBATCH --job-name=batch-kaidong
-#SBATCH --output=job.%j.out
+#SBATCH --output=$2.out
 #SBATCH --ntasks=10
 #SBATCH --nodes=1
 #SBATCH --partition=gpu

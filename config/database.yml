@@ -1,5 +1,6 @@
 default: &DEFAULT
   adapter: sqlite3
+  #database: ":memory:"
   database: "storage/parameters.sqlite3"
   #username: myapp
   #password: password1

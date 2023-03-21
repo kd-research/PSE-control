@@ -37,9 +37,9 @@ module AgentFormer
   ##
   # Call Agentformer learn from given config
   # require config rendered by
-  def self.call_agentformer(config_render, load: :auto, dry_run: false)
+  def self.call_agentformer(load: :auto, dry_run: false)
     tmpcfg = temp_af_config
-    config_content = config_render.render('agentformer').tap do |x|
+    config_content = renderer_instance.render('agentformer').tap do |x|
       tmpcfg.write(x)
       tmpcfg.flush
     end

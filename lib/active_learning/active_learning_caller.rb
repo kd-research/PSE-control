@@ -59,7 +59,7 @@ module ActiveLearningCaller
     keras_exec cmd.shelljoin
   end
 
-  def self.keras_sample_train(with_label: nil)
+  def self.keras_sample_train(with_label: nil, dummy: false)
     cmd = CONFIG['python_path'].shellsplit
     cmd << 'keras_sampl.py'
     cmd << working_dir
@@ -69,7 +69,7 @@ module ActiveLearningCaller
     samples = keras_exec(cmd.shelljoin, capture: true)
     CSV.parse(samples, converters: :all).each do |pararmeter|
       # @parameter : An array of size 9
-      pararmeter.map! { |x| x.between?(0, 1) ? x : rand }
+      pararmeter.map! { |x| (x.between?(0, 1) && !dummy) ? x : rand }
       obj = ParameterObject.new
       obj.safe_set_parameter(pararmeter)
       obj.active_generated = true
