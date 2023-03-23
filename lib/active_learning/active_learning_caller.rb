@@ -55,10 +55,11 @@ module ActiveLearningCaller
     end
   end
 
-  def self.keras_train
+  def self.keras_train(fast: false)
     cmd = CONFIG['python_path'].shellsplit
     cmd << 'keras_train.py'
     cmd << working_dir
+    cmd << '--fast' if fast
 
     keras_exec cmd.shelljoin
   end

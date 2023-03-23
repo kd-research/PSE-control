@@ -64,6 +64,7 @@ class ParameterObject < ActiveRecord::Base
 
     self.parameters = parameters
     rehash!
+    save
   end
 
   ##

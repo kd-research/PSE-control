@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+require_relative '../snapshot'
 require_relative '../config_loader'
 
 module ParameterDatabase
@@ -14,7 +15,13 @@ module ParameterDatabase
 
     db_config = load_config('config/database.yml')
     db_config.symbolize_keys!
-    ActiveRecord::Base.establish_connection(db_config[target])
+
+    c = db_config[target]
+    if c['adapter'] == 'sqlite3'
+      c['database'] = Snapshot.make_snapshot(c['database'], copy: false)
+    end
+
+    ActiveRecord::Base.establish_connection(c)
   end
 
   def initialize_database(...)

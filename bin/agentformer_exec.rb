@@ -9,7 +9,7 @@ require_relative '../lib/steer_suite'
 require_relative '../lib/parameter_object'
 
 ParameterDatabase.establish_connection
-ParameterDatabase.initialize_database
+ParameterDatabase.initialize_database(force: true)
 
 def init_feeding
   def get_binary_filenames(dirname)
@@ -37,7 +37,7 @@ end
 
 init_feeding
 $budget_base = ParameterObject.where(split: :train, state: :processed, label: 'budget-ground').limit(1000).pluck(:file)
-$bycycle = true
+$bycycle = false
 $dummy = false
 $jobmod = "active-#{'no' if $bycycle }cont-#{$dummy? 'dummy': 'batch'}"
 
@@ -56,7 +56,7 @@ def cycle_train(source_label:, target_label:nil, finalize: false)
   renderer.set_data_source(train_files, valid_files, test_files)
 
   start_time = Time.now
-  puts AgentFormer.call_agentformer
+  AgentFormer.call_agentformer
   puts "Agentformer #{source_label} training use #{Time.now - start_time} seconds"
 
   start_time = Time.now

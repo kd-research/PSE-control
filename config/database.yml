@@ -5,8 +5,8 @@ default: &DEFAULT
   database: "storage/parameters.sqlite3"
   #username: myapp
   #password: password1
-  pool: 1
-  timeout: 1000
+  pool: 50
+  timeout: 10000
   #host: localhost
 % else
   adapter: postgresql

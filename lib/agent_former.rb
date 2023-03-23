@@ -5,6 +5,7 @@ require 'yaml'
 require 'tempfile'
 require 'open3'
 require 'shellwords'
+require_relative 'snapshot'
 require_relative 'config_loader'
 require_relative 'active_learning/agent_former_config_renderer'
 
@@ -31,7 +32,7 @@ module AgentFormer
     Process.wait(pid)
 
     unless $CHILD_STATUS&.success?
-      warn(message)
+      #warn(message)
       raise "Agentformer program exited with error code #{$CHILD_STATUS&.exitstatus}"
     end
   end
