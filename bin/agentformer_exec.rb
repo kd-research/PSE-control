@@ -2,6 +2,7 @@ require 'yaml'
 require 'tqdm'
 require 'pathname'
 require 'fileutils'
+require 'securerandom'
 require_relative '../lib/active_learning/active_learning_caller'
 require_relative '../lib/storage_loader'
 require_relative '../lib/agent_former'
@@ -36,10 +37,10 @@ def init_feeding
 end
 
 init_feeding
-$budget_base = ParameterObject.where(split: :train, state: :processed, label: 'budget-ground').limit(1000).pluck(:file)
 $bycycle = false
 $dummy = false
-$jobmod = "active-#{'no' if $bycycle }cont-#{$dummy? 'dummy': 'batch'}"
+$budget_base = ParameterObject.where(split: :train, state: :processed, label: 'budget-ground').limit(3000).pluck(:file)
+$jobmod = "active-#{'no' if $bycycle }cont-#{$dummy? 'dummy': 'batch'}-#{SecureRandom.base64}"
 
 def cycle_train(source_label:, target_label:nil, finalize: false)
   train_files = ParameterObject.where(split: :train, state: :processed, label: source_label).pluck(:file) + $budget_base
@@ -52,7 +53,8 @@ def cycle_train(source_label:, target_label:nil, finalize: false)
                  else
                    ""
                  end
-  renderer.instance_variable_set :@model_suffix, '_ae_' + $jobmod.tr('-', '_') + epoch_suffix
+  #renderer.instance_variable_set :@model_suffix, '_ae_' + $jobmod.tr('-', '_') + epoch_suffix
+  renderer.instance_variable_set :@model_suffix, "_ae_#{$dummy? 'dummy': 'batch'}"
   renderer.set_data_source(train_files, valid_files, test_files)
 
   start_time = Time.now
