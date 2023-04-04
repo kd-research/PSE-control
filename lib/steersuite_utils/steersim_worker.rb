@@ -37,11 +37,17 @@ module SteerSuite
         w.close
         i.puts(parameter_obj.to_txt)
         o.expect("Finished scenario 0\n")
-        simulated = o.gets.chomp
+        simulated = o.gets&.chomp
       end
       benchmark_log = r.read
 
-      [parameter_obj.id, simulated, benchmark_log]
+      if simulated
+        SteerSuite.document(parameter_obj, simulated)
+        BenchmarkLogs.new(parameter_object: parameter_obj, log: benchmark_log).save!
+      else
+        parameter_obj.state = :rot
+        parameter_obj.save!
+      end
     end
 
     # Take steersim processing a string document and return
@@ -75,11 +81,9 @@ module SteerSuite
       FileUtils.mkdir_p(StorageLoader.get_path(CONFIG['steersuite_record_pool']))
       unsimulated = ParameterObject.with_no_simulation
       puts "Going to simulate #{unsimulated.size} scenarios"
-      Parallel.map(unsimulated) do |pobj|
-        SteerSuite.simulate(pobj).tap { print '.' }
-      end.each do |id, fn, bl|
-        SteerSuite.document(ParameterObject.find(id), fn)
-        BenchmarkLogs.new(parameter_object: ParameterObject.find(id), log: bl).save!
+      Parallel.each(unsimulated, in_threads: `nproc`.to_i) do |pobj|
+        SteerSuite.simulate(pobj)
+        print '.'
       end
     end
 
@@ -90,6 +94,7 @@ module SteerSuite
       data = SteerSuite.load(filename, need_trajectory: false)
       pobj.file = File.absolute_path(filename)
       pobj.safe_set_parameter(data.parameter)
+      pobj.save!
     end
   end
 end

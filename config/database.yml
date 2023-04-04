@@ -10,7 +10,7 @@ default: &DEFAULT
   #host: localhost
 % else
   adapter: postgresql
-  database: storage_parameter
+  database: storage_parameter_scene2
   username: myapp
   password: password1
   pool: 50

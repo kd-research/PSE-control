@@ -9,7 +9,6 @@ module ParameterDatabase
   ].freeze
 
   module_function
-
   def establish_connection(target: :default)
     return if ActiveRecord::Base.connected?
 

@@ -19,6 +19,7 @@ module SteerSuite
         end
 
         next nil unless newelem[:a].size <= 135
+        next nil unless newelem[:a].size > 50
 
         compressed = newelem[:a].each_slice(5).map {|arr| arr.first }
         Data::TrajectoryList.new(compressed)
