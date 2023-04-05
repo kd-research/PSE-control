@@ -17,7 +17,7 @@ def init_feeding
     Dir.glob("*.bin", base: dirname)
   end
 
-  dirname = './storage/steersimRecord-train'
+  dirname = './storage/scene2-base-data/train'
   get_binary_filenames(dirname).tqdm.each do |fname|
     pobj = ParameterObject.new(split: :train, state: :processed, label: 'budget-ground')
     pobj.label = "budget-ground"
@@ -26,7 +26,7 @@ def init_feeding
     pobj.save!
   end
 
-  dirname = './storage/steersimRecord-cv'
+  dirname = './storage/scene2-base-data/valid'
   get_binary_filenames(dirname).tqdm.each do |fname|
     pobj = ParameterObject.new(split: :cross_valid, state: :processed, label: 'budget-ground')
     pobj.label = "budget-ground"
@@ -37,10 +37,13 @@ def init_feeding
 end
 
 init_feeding
-$bycycle = false
-$dummy = false
-$budget_base = ParameterObject.where(split: :train, state: :processed, label: 'budget-ground').limit(3000).pluck(:file)
-$jobmod = "active-#{'no' if $bycycle }cont-#{$dummy? 'dummy': 'batch'}-#{SecureRandom.base64}"
+
+$bycycle = $bycycle || false
+$dummy = $dummy || false
+$start_data = $start_data&.to_i || 6000
+
+$budget_base = ParameterObject.where(split: :train, state: :processed, label: 'budget-ground').limit($start_data).pluck(:file)
+$jobmod = "active-#{'no' if $bycycle }cont-#{$dummy ? 'dummy': 'batch'}-#{SecureRandom.base64}"
 
 def cycle_train(source_label:, target_label:nil, finalize: false)
   train_files = ParameterObject.where(split: :train, state: :processed, label: source_label).pluck(:file) + $budget_base
@@ -82,7 +85,7 @@ def cycle_train(source_label:, target_label:nil, finalize: false)
 end
 
 batch_labels = []
-(1..9).each {|i| batch_labels << "active-#{$jobmod}-#{i}"}
+(1..9).each {|i| batch_labels << "active-#{$jobmod}-#{i}"} unless $batch
 ParameterObject.where(label: batch_labels).delete_all
 
 batch_labels.each_index do |idx|

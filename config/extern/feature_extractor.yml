@@ -1,6 +1,6 @@
 past_frames                  : 14
 future_frames                : 13
-min_past_frames              : 8
+min_past_frames              : 6
 min_future_frames            : 4
 
 traj_scale                   : 2

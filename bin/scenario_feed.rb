@@ -9,7 +9,7 @@ ParameterDatabase.establish_connection(target: $target)
 #ParameterDatabase.initialize_database(force: true)
 
 if true
-  10000.times.tqdm.each do |i|
+  80000.times.tqdm.each do |i|
     p = ParameterObject.new(label: 'budget-ground', split: :train, state: :raw, file: nil)
     p.safe_set_parameter(21.times.map { rand })
     p.save!
