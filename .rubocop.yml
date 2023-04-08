@@ -6,6 +6,15 @@ AllCops:
     - 'node_modules/**/*'
     - 'config/spring.rb'
 
+Layout/LineLength:
+  Max: 120
+
+Metric/ABCSize:
+  - Enabled: false
+
+Metrics/MethodLength:
+  Max: 40
+
 Bundler/OrderedGems:
   Exclude:
     - 'Gemfile'

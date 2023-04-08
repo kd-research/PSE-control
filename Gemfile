@@ -10,6 +10,7 @@ gem 'parallel'
 gem 'rake'
 gem 'yaml'
 gem 'sqlite3'
+gem 'nokogiri'
 
 unless ENV['USER'] =~ /hpcguest/
   gem 'pg'

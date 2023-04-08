@@ -3,7 +3,7 @@
 require 'minitest/autorun'
 require_relative '../lib/parameter_object'
 
-ParameterObject.establish_connection(target: :test)
+ParameterDatabase.establish_connection(target: :test)
 class ParameterObjectTest < Minitest::Test
   def setup
     #ParameterObject.initialize_database(force: true)

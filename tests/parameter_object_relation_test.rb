@@ -5,7 +5,7 @@ require_relative '../lib/parameter_object'
 
 
 
-ParameterObject.establish_connection(target: :test)
+ParameterDatabase.establish_connection(target: :test)
 class ParameterObjectRelationTest < Minitest::Test
   def setup
     # ParameterObjectRelation.initialize_database(force: true)

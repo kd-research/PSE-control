@@ -59,7 +59,7 @@ module RPlot
     def execute
       script = @target_script_template.result(@plot_action.get_binding)
       fork do
-        plot_obj = [self]  # prevent object from gc during fork
+        # plot_obj = [self]  # prevent object from gc during fork
         open('|Rscript -', 'w') do |io|
           io.puts script
         end

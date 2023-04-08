@@ -1,0 +1,31 @@
+<SteerSimOptions>
+  <engine>
+    <clockMode>fixed-real-time</clockMode>
+    <startupModules>
+      <module>scenario</module>
+    </startupModules>
+  </engine>
+
+  <spatialDatabase>
+    <useDatabase>kdTreeDatabase</useDatabase>
+    <gridDatabase>
+      <maxItemsPerGridCell>15</maxItemsPerGridCell>
+      <numCellsX>200</numCellsX> <numCellsZ>200</numCellsZ>
+      <sizeX>20</sizeX> <sizeZ>20</sizeZ>
+    </gridDatabase>
+  </spatialDatabase>
+
+  <modules>
+    <scenario>
+      <scenarioAI>rvo2dAI</scenarioAI>
+      <numScenarios>1</numScenarios>
+
+      <sceneBasic1 id="scene-type"/>
+      <maxFrames>3000</maxFrames>
+
+      <useBenchmark/>
+      <benchmarkLog>/dev/fd/5</benchmarkLog>
+      <benchmarkTechnique>compositePLE</benchmarkTechnique>
+    </scenario>
+  </modules>
+</SteerSimOptions>
