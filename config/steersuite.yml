@@ -9,6 +9,12 @@ steersuite_record_pool: "steersimRecord-generated"
 steersuite_process_pool: "steersimRecord-generated-process"
 steersuite_config_path: "config/extern/steersim-config.xml"
 
+scene_defs:
+  - scene1
+  - scene2
+  - scene3
+  - scene4
+
 steersuite_scene:
   basic:
     scene1:

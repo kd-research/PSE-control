@@ -28,4 +28,23 @@ class SteerSuiteInfoTest < Minitest::Test
     assert_equal 9, SteerSuite.info.parameter_size
     assert_equal 'sceneBasic1', SteerSuite.const_get('SteersimConfig').css('#scene-type').first.name
   end
+
+  def test_data_location
+    (1..4).each { |i| verify_data_location("scene#{i}") }
+  end
+
+  def test_incorrect_scene
+    assert_raises ArgumentError do
+      SteerSuite.set_info('scene-not-exist')
+    end
+  end
+
+  private
+  def verify_data_location(scene)
+    SteerSuite.set_info(scene)
+    data_location = SteerSuite.info.data_location
+    assert File.directory?(data_location[:train])
+    assert File.directory?(data_location[:valid])
+    #assert File.directory?(data_location[:test])
+  end
 end
