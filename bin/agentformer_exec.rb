@@ -13,14 +13,14 @@ ParameterDatabase.establish_connection
 ParameterDatabase.initialize_database(force: true)
 
 $scene = $scene || 'scene1'
-SteerSuite.default($scene)
+SteerSuite.set_info($scene)
 
 def init_feeding
   def get_binary_filenames(dirname)
     Dir.glob("*.bin", base: dirname)
   end
 
-  dirname = "./storage/#{$data_path}/train"
+  dirname = SteerSuite.info.data_location[:train]
   get_binary_filenames(dirname).tqdm.each do |fname|
     pobj = ParameterObject.new(split: :train, state: :processed, label: 'budget-ground')
     pobj.label = "budget-ground"
@@ -29,7 +29,7 @@ def init_feeding
     pobj.save!
   end
 
-  dirname = "./storage/#{$data_path}/valid"
+  dirname = SteerSuite.info.data_location[:valid]
   get_binary_filenames(dirname).tqdm.each do |fname|
     pobj = ParameterObject.new(split: :cross_valid, state: :processed, label: 'budget-ground')
     pobj.label = "budget-ground"

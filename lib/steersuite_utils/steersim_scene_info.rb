@@ -15,7 +15,7 @@ class SteersimSceneInfo
     { train: File.join(base, 'train'), valid: File.join(base, 'valid'), test: File.join(base, 'test') }
   end
 
-  def prepare_steer_sim_config
+  def prepare_steer_sim_config!
     # based on scene name, config scene name is 'sceneBasic[1-4]'
     scene_name = "sceneBasic#{@scene[-1]}"
     SteerSuite::SteersimConfigEditor.change_scene(scene_name)

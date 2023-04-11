@@ -5,7 +5,7 @@ module ParameterObjectRelationActions
     connection.create_table :parameter_relations, force: force do |t|
       t.belongs_to :from, class_name: 'ParameterObject'
       t.belongs_to :to, class_name: 'ParameterObject'
-      t.string :relation, default: 'relation_nil'
+      t.string :relation, set_info: 'relation_nil'
     end
   end
 end

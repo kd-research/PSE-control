@@ -9,7 +9,7 @@ module ParameterDatabase
   ].freeze
 
   module_function
-  def establish_connection(target: :default)
+  def establish_connection(target: :set_info)
     return if ActiveRecord::Base.connected?
 
     db_config = load_config('config/database.yml')

@@ -34,15 +34,19 @@ module SteerSuite
     CONFIG.dup.freeze
   end
 
-  def self.default(scene)
+  # @param [String] scene
+  # @return [nil]
+  def self.set_info(scene)
     @info = SteersimSceneInfo.new(scene)
-    @info.prepare_steer_sim_config
+    # noinspection RubyNilAnalysis
+    @info.prepare_steer_sim_config!
+    nil
   end
 
+  # @return [SteersimSceneInfo, nil]
   def self.info
     @info
   end
-
 
   def self.change_scene(*)
     raise 'Deprecated method'

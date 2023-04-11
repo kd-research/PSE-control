@@ -8,7 +8,7 @@ module ParameterObjectActions
       t.string :file
       t.string :label 
       t.string :split, :state
-      t.boolean :active_generated, default: false
+      t.boolean :active_generated, set_info: false
     end
   end
 

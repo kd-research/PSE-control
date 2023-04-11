@@ -17,12 +17,12 @@ module AgentFormer
     attr_reader :result_dir
 
     def initialize
-      @result_dir = StorageLoader.get_absolute_path(CONFIG['result_dir'])
-      if File.exist?(@result_dir)
-        @result_dir = Snapshot.make_snapshot(@result_dir)
-      else
-        @result_dir = Snapshot.make_empty_snapshot(@result_dir)
-      end
+      orig_dir = StorageLoader.get_absolute_path(CONFIG['result_dir'])
+      @result_dir = if File.exist?(orig_dir)
+                      Snapshot.make_snapshot(orig_dir)
+                    else
+                      Snapshot.make_empty_snapshot(orig_dir)
+                    end
     end
 
     ##

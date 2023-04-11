@@ -4,7 +4,7 @@ require_relative '../lib/steer_suite'
 require_relative '../lib/parameter_record/parameter_object'
 require_relative '../lib/parameter_record/parameter_object_relation'
 
-$target = :default
+$target = :set_info
 ParameterDatabase.establish_connection(target: $target)
 ParameterDatabase.initialize_database(force: true)
 

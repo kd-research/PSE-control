@@ -23,12 +23,12 @@ module SteerSuite
       end
 
       # Block return new element sit on each frame
-      def map_speed(speed_proc=:default)
+      def map_speed(speed_proc=:set_info)
         return to_enum(:each_speed, speed_proc) unless block_given?
 
         unless speed_proc.respond_to? :call
           case speed_proc
-          when :default
+          when :set_info
             speed_proc = @default_speed_proc
           when :identity
             speed_proc = proc { |x, y| [x, y] }

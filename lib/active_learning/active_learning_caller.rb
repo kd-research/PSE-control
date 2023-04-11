@@ -55,7 +55,15 @@ module ActiveLearningCaller
     end
   end
 
+  def self.fill_keras_cfg
+    File.write File.join(working_dir, "model.cfg"), <<~CONFIG
+      parameter_size = #{SteerSuite.info.parameter_size}
+    CONFIG
+  end
+
   def self.keras_train(fast: false)
+    fill_keras_cfg
+
     cmd = CONFIG['python_path'].shellsplit
     cmd << 'keras_train.py'
     cmd << working_dir
@@ -65,6 +73,8 @@ module ActiveLearningCaller
   end
 
   def self.keras_sample_train(with_label: nil, dummy: false)
+    fill_keras_cfg
+
     cmd = CONFIG['python_path'].shellsplit
     cmd << 'keras_sampl.py'
     cmd << working_dir
