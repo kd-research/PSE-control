@@ -12,12 +12,14 @@ require_relative '../lib/parameter_object'
 ParameterDatabase.establish_connection
 ParameterDatabase.initialize_database(force: true)
 
+$data_path = $data_path || "scene2-base-data"
+
 def init_feeding
   def get_binary_filenames(dirname)
     Dir.glob("*.bin", base: dirname)
   end
 
-  dirname = './storage/scene2-base-data/train'
+  dirname = "./storage/#{$data_path}/train"
   get_binary_filenames(dirname).tqdm.each do |fname|
     pobj = ParameterObject.new(split: :train, state: :processed, label: 'budget-ground')
     pobj.label = "budget-ground"
@@ -26,7 +28,7 @@ def init_feeding
     pobj.save!
   end
 
-  dirname = './storage/scene2-base-data/valid'
+  dirname = "./storage/#{$data_path}/valid"
   get_binary_filenames(dirname).tqdm.each do |fname|
     pobj = ParameterObject.new(split: :cross_valid, state: :processed, label: 'budget-ground')
     pobj.label = "budget-ground"
@@ -40,10 +42,10 @@ init_feeding
 
 $bycycle = $bycycle || false
 $dummy = $dummy || false
-$start_data = $start_data&.to_i || 6000
+$start_data = $start_data&.to_i || 4000
 
 $budget_base = ParameterObject.where(split: :train, state: :processed, label: 'budget-ground').limit($start_data).pluck(:file)
-$jobmod = "active-#{'no' if $bycycle }cont-#{$dummy ? 'dummy': 'batch'}-#{SecureRandom.base64}"
+$jobmod = "activejob-#{Random.alphanumeric}"
 
 def cycle_train(source_label:, target_label:nil, finalize: false)
   train_files = ParameterObject.where(split: :train, state: :processed, label: source_label).pluck(:file) + $budget_base
@@ -56,8 +58,7 @@ def cycle_train(source_label:, target_label:nil, finalize: false)
                  else
                    ""
                  end
-  #renderer.instance_variable_set :@model_suffix, '_ae_' + $jobmod.tr('-', '_') + epoch_suffix
-  renderer.instance_variable_set :@model_suffix, "_ae_#{$dummy? 'dummy': 'batch'}"
+  renderer.instance_variable_set :@model_suffix, '_' + $jobmod.tr('-', '_') + epoch_suffix 
   renderer.set_data_source(train_files, valid_files, test_files)
 
   start_time = Time.now

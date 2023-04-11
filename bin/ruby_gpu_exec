@@ -14,5 +14,5 @@ cat << HERE | sbatch
 module load singularity || true
 
 set -xe
-ruby $1
+ruby -s $1 ${@:3}
 HERE

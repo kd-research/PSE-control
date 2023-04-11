@@ -8,5 +8,5 @@ active_learning_keras_base: "/home/kaidong/PycharmProjects/pkl-keras-train"
 with_agentformer: true
 #working_directory: "/home/kaidong/PycharmProjects/pkl-keras-train"
 sample_amount:
-  train: 500
+  train: 1000
   valid: 0

@@ -6,7 +6,8 @@ require 'securerandom'
 require_relative 'storage_loader'
 
 module Snapshot
-  SNAPSHOT_PATH = Dir.mktmpdir(%w[activeloop- .snapshot], StorageLoader.storage_base)
+  FileUtils.mkdir_p(File.join(StorageLoader.storage_base, 'snapshots'))
+  SNAPSHOT_PATH = Dir.mktmpdir(%w[activeloop- .snapshot], File.join(StorageLoader.storage_base, 'snapshots'))
 
   module_function
   def make_empty_snapshot(path)

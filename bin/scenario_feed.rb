@@ -10,9 +10,9 @@ ParameterDatabase.initialize_database(force: true)
 
 SteerSuite.change_scene('sceneBasic4')
 if true
-  10000.times.tqdm.each do |i|
+  1000.times.tqdm.each do |i|
     p = ParameterObject.new(label: 'budget-ground', split: :train, state: :raw, file: nil)
-    p.safe_set_parameter(19.times.map { rand })
+    p.safe_set_parameter(21.times.map { rand })
     p.save!
   end
 end

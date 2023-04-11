@@ -1,0 +1,16 @@
+#!/bin/bash
+
+cat << HERE | sbatch
+#!/bin/bash
+
+#SBATCH --job-name=rb_cpu
+#SBATCH --output=job.%j.out
+#SBATCH --ntasks=28
+#SBATCH --nodes=1
+#SBATCH --partition=long
+
+module load singularity || true
+
+set -xe
+ruby $1
+HERE
