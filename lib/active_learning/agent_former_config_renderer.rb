@@ -18,7 +18,11 @@ module AgentFormer
 
     def initialize
       @result_dir = StorageLoader.get_absolute_path(CONFIG['result_dir'])
-      @result_dir = Snapshot.make_snapshot(@result_dir)
+      if File.exist?(@result_dir)
+        @result_dir = Snapshot.make_snapshot(@result_dir)
+      else
+        @result_dir = Snapshot.make_empty_snapshot(@result_dir)
+      end
     end
 
     ##

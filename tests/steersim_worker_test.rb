@@ -61,7 +61,7 @@ class SteersimWorkerTest < Minitest::Test
   end
 
   def test_steersim_worker_verify_scene_change
-    SteerSuite.change_scene('sceneBasic2')
+    SteerSuite.default('scene2')
     dry_hash = {}
     SteerSuite.simulate(Minitest::Mock.new.expect(:to_txt, ""), dry_run: true, dry_hash: dry_hash)
     assert_equal dry_hash[:input], ""
@@ -71,7 +71,7 @@ class SteersimWorkerTest < Minitest::Test
   def test_steersim_worker_run_core_with_scene_changed
     Dir.mktmpdir do |dir|
       SteerSuite.const_get(:CONFIG).store('steersuite_record_pool', dir)
-      SteerSuite.change_scene('sceneBasic2')
+      SteerSuite.default('scene2')
       file = SteerSuite.exec_simulate (["1"]*21).join(" ")
       assert(file && File.exist?(file))
     end

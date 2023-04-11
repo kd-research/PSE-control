@@ -8,11 +8,17 @@ require_relative '../lib/parameter_object'
 ParameterDatabase.establish_connection(target: :test)
 class ParameterObjectRelationTest < Minitest::Test
   def setup
-    # ParameterObjectRelation.initialize_database(force: true)
+    ParameterDatabase.initialize_database(force: true)
+    seed
+  end
+
+  def seed
+    3.times do |i|
+      ParameterObject.new.save!
+    end
   end
 
   def test_parameter_relation
-    skip("needs database setup")
     a = ParameterObject.find(1)
     b = ParameterObject.find(2)
     c = ParameterObject.find(3)

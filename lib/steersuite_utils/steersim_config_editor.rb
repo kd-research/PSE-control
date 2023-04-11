@@ -9,5 +9,7 @@ module SteerSuite
       new_scene['id'] = 'scene-type'
       SteersimConfig.at('#scene-type').replace(new_scene)
     end
+
+    module_function :change_scene
   end
 end

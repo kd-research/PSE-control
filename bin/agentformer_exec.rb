@@ -12,7 +12,8 @@ require_relative '../lib/parameter_object'
 ParameterDatabase.establish_connection
 ParameterDatabase.initialize_database(force: true)
 
-$data_path = $data_path || "scene2-base-data"
+$scene = $scene || 'scene1'
+SteerSuite.default($scene)
 
 def init_feeding
   def get_binary_filenames(dirname)

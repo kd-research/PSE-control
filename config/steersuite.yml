@@ -10,12 +10,13 @@ steersuite_process_pool: "steersimRecord-generated-process"
 steersuite_config_path: "config/extern/steersim-config.xml"
 
 steersuite_scene:
-  sceneBasic1:
-    parameter_size: 9
-  sceneBasic2:
-    parameter_size: 21
-  sceneBasic3:
-    parameter_size: 15
-  sceneBasic4:
-    parameter_size: 19
+  basic:
+    scene1:
+      parameter_size: 9
+    scene2:
+      parameter_size: 21
+    scene3:
+      parameter_size: 15
+    scene4:
+      parameter_size: 19
 
