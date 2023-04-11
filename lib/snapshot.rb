@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 require 'tmpdir'
+require 'tempfile'
 require 'fileutils'
 require 'securerandom'
 require_relative 'storage_loader'
@@ -14,11 +15,12 @@ module Snapshot
     target
   end
 
-  def make_temp_file_in_snapshot(content)
-    path = File.join(SNAPSHOT_PATH, Random.alphanumeric(10))
-    path = File.join(SNAPSHOT_PATH, Random.alphanumeric(10)) while File.exist?(path)
-    File.write(path, content)
-    path
+  def make_temp_file_in_snapshot(content, prefix: 'activeloop-tmpfile', suffix: nil)
+    FileUtils.mkdir_p(File.join(SNAPSHOT_PATH, 'tmp'))
+    file = Tempfile.new([prefix, suffix], File.join(SNAPSHOT_PATH, 'tmp'))
+    file.write(content)
+    file.close
+    file.path
   end
 
   def make_snapshot(path, copy: true)

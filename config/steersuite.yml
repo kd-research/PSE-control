@@ -5,6 +5,17 @@ steersuite_exec_cmd: "singularity exec --env LD_LIBRARY_PATH=$LD_LIBRARY_PATH --
 steersuite_exec_base: "/home/kaidong/SteerSuite-P2/build/bin"
 steersuite_exec_cmd: "./steersim -commandline"
 %end
-steersuite_record_pool: "steersimRecord-new-train"
-steersuite_process_pool: "steersimRecord-new-train-process"
+steersuite_record_pool: "steersimRecord-generated"
+steersuite_process_pool: "steersimRecord-generated-process"
 steersuite_config_path: "config/extern/steersim-config.xml"
+
+steersuite_scene:
+  sceneBasic1:
+    parameter_size: 9
+  sceneBasic2:
+    parameter_size: 21
+  sceneBasic3:
+    parameter_size: 15
+  sceneBasic4:
+    parameter_size: 19
+

@@ -31,6 +31,7 @@ module SteerSuite
         BenchmarkLogs.new(parameter_object: parameter_obj, log: benchmark_log).save!
       else
         parameter_obj.state = :rot
+        parameter_obj.file = "INVALID"
         parameter_obj.save!
       end
     end
@@ -51,7 +52,8 @@ module SteerSuite
         'SteersimRecordPath' => steersim_record_path,
         'LD_LIBRARY_PATH' => ld_library_path
       }
-      config_path = Snapshot.make_temp_file_in_snapshot(SteersimConfig.to_xml)
+      config_path = Snapshot.make_temp_file_in_snapshot(SteersimConfig.to_xml,
+                                                        prefix: 'steersuite-config-', suffix: '.xml')
       command = CONFIG['steersuite_exec_cmd'] + " -config #{config_path}"
       workdir = CONFIG['steersuite_exec_base']
 
@@ -66,7 +68,8 @@ module SteerSuite
       end
 
       if dry_run
-        dry_hash&.update({ input: doc, env_patch: env_patch, command: command, chdir: workdir, config: SteersimConfig.to_xml })
+        dry_hash&.update(
+          { input: doc, env_patch: env_patch, command: command, chdir: workdir, config: SteersimConfig.to_xml })
         return nil
       end
 
@@ -78,14 +81,14 @@ module SteerSuite
         i.puts(doc)
         if $DEBUG
           logs = o.readlines
-          puts "=================="
+          puts '=================='
           puts logs
           ret = logs.slice_after { |l| l == "Finished scenario 0\n" }.to_a.at(1)
           o = StringIO.new(ret.join)
         else
           o.expect("Finished scenario 0\n")
         end
-        simulated = o.gets.chomp
+        simulated = o.gets&.chomp
       end
 
       simulated
