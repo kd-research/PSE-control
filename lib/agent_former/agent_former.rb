@@ -9,10 +9,6 @@ require_relative '../snapshot'
 require_relative '../config_loader'
 
 module AgentFormer
-  extend ConfigLoader
-  CONFIG = load_config('config/agentformer.yml')
-  PROJECT_BASE = Snapshot.make_snapshot(CONFIG['agent_former_base'])
-  private_constant :CONFIG, :PROJECT_BASE
 
   def self.temp_af_config(preserve: false)
     af_config_path = File.expand_path('cfg/tmp', PROJECT_BASE)

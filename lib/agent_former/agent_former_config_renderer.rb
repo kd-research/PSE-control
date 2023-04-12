@@ -7,7 +7,7 @@ module AgentFormer
   ##
   # Get singleton renderer
   def self.renderer_instance
-    @render_instance ||= AgentFormerConfigRenderer.new
+    @renderer_instance ||= AgentFormerConfigRenderer.new
   end
 
   ##
@@ -57,6 +57,14 @@ module AgentFormer
 
     def include_data_source
       @data_source.to_yaml.delete_prefix("---\n")
+    end
+
+    def to_h
+      YAML.safe_load(render('agentformer'))
+    end
+
+    def [](...)
+      to_h.send(:[], ...)
     end
   end
 end

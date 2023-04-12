@@ -10,6 +10,10 @@ class SteersimSceneInfo
     CONFIG.dig('steersuite_scene', 'basic', @scene, 'parameter_size').to_i
   end
 
+  def nagent
+    CONFIG.dig('steersuite_scene', 'basic', @scene, 'nagent').to_i
+  end
+
   def data_location
     base = StorageLoader.get_path("#{@scene}-base-data")
     { train: File.join(base, 'train'), valid: File.join(base, 'valid'), test: File.join(base, 'test') }

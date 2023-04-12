@@ -10,9 +10,9 @@ class RPlotTest < Minitest::Test
     super
     @scenario_list = []
     @scenario_list << SteerSuite::Scenario.from_file(
-      TestAsset.get_path('steersim_binary/steersim_binary_sample1.bin'))
+      TestAsset.get_path('steersim_binary/sample1.bin'))
     @scenario_list << SteerSuite::Scenario.from_file(
-      TestAsset.get_path('steersim_binary/steersim_binary_sample2.bin'))
+      TestAsset.get_path('steersim_binary/sample2.bin'))
 
     @keep_tmp_file = false
     @tmpfile = nil

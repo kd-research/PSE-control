@@ -49,7 +49,7 @@ module SteerSuite
 
   # @return [SteersimSceneInfo, nil]
   def self.info
-    @info
+    @info || raise('No scene info set')
   end
 
   def self.change_scene(*)

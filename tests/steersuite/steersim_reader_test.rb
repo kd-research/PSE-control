@@ -14,7 +14,7 @@ class SteersimReaderTest < MiniTest::Test
       s.agent_data << SteerSuite::Data::TrajectoryList.new([Vector[0.0, 0.0], Vector[0.0, 0.0]])
       s.agent_data << SteerSuite::Data::TrajectoryList.new([Vector[0.0, 0.0], Vector[0.0, 0.0]])
     end.freeze
-    @ss_binary_data = TestAsset.load('steersim_binary/steersuite_binary_dummy.bin')
+    @ss_binary_data = TestAsset.load('steersim_binary/dummy.bin')
   end
   def test_writing_correctness
     buf = StringIO.new

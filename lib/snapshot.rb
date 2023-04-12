@@ -6,10 +6,22 @@ require 'securerandom'
 require_relative 'storage_loader'
 
 module Snapshot
-  FileUtils.mkdir_p(File.join(StorageLoader.storage_base, 'snapshots'))
-  SNAPSHOT_PATH = Dir.mktmpdir(%w[activeloop- .snapshot], File.join(StorageLoader.storage_base, 'snapshots'))
 
   module_function
+  def reinitialize!
+    set_snapshot_base(File.join(StorageLoader.storage_base, 'snapshots'))
+  end
+
+  def set_snapshot_base(path)
+    if const_defined?(:SNAPSHOT_PATH)
+      Dir.rmdir(SNAPSHOT_PATH) if Dir.empty?(SNAPSHOT_PATH)
+      remove_const(:SNAPSHOT_PATH)
+    end
+    FileUtils.mkdir_p(path)
+    pp snpath = Dir.mktmpdir(%w[activeloop- .snapshot], path)
+    const_set(:SNAPSHOT_PATH, snpath)
+  end
+
   def make_empty_snapshot(path)
     target = make_snapshot(path, copy: false)
     FileUtils.mkdir_p(target)
@@ -24,11 +36,12 @@ module Snapshot
     file.path
   end
 
-  def make_snapshot(path, copy: true)
+  def make_snapshot(path, copy: !$NOINIT)
     basename = File.basename(path)
     target = File.join(SNAPSHOT_PATH, basename)
     FileUtils.cp_r(path, target) if copy
     target
   end
 
+  reinitialize!
 end

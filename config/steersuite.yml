@@ -19,10 +19,14 @@ steersuite_scene:
   basic:
     scene1:
       parameter_size: 9
+      nagent: 2
     scene2:
       parameter_size: 21
+      nagent: 2
     scene3:
       parameter_size: 15
+      nagent: 2
     scene4:
       parameter_size: 19
+      nagent: 3
 

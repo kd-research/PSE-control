@@ -19,10 +19,19 @@ require_relative '../parameter_object'
 # Train AgentFormer
 module ActiveLearningCaller
   extend ConfigLoader
-  CONFIG = load_config('config/active_learning.yml')
-  AF_CONFIG = load_config('config/agentformer.yml')
-  PROJECT_BASE = Snapshot.make_snapshot(CONFIG['active_learning_keras_base'])
-  private_constant :CONFIG, :AF_CONFIG, :PROJECT_BASE
+
+  def self.reinitialize!
+    remove_const :CONFIG if self.const_defined? :CONFIG
+    remove_const :AF_CONFIG if self.const_defined? :AF_CONFIG
+    remove_const :PROJECT_BASE if self.const_defined? :PROJECT_BASE
+
+    const_set :CONFIG, load_config('config/active_learning.yml')
+    const_set :AF_CONFIG, load_config('config/agentformer.yml')
+    const_set :PROJECT_BASE, Snapshot.make_snapshot(CONFIG['active_learning_keras_base'])
+
+    private_constant :CONFIG, :AF_CONFIG, :PROJECT_BASE
+  end
+
   ##
   # Active learning model require an arg as working directory,
   # and PYTHON_PATH set to the code base.
@@ -41,7 +50,6 @@ module ActiveLearningCaller
       Process.wait(pid)
       raise "Subprogram exited with error code #{$CHILD_STATUS.exitstatus}" unless $CHILD_STATUS&.success?
     end
-
   end
 
   def self.working_dir
@@ -56,33 +64,59 @@ module ActiveLearningCaller
     end
   end
 
-  def self.fill_keras_cfg
-    File.write File.join(working_dir, "model.cfg"), <<~CONFIG
+  def self.fill_keras_cfg(ext_configs = {})
+    config = <<~CONFIG
       parameter_size = #{SteerSuite.info.parameter_size}
+      nagent = #{SteerSuite.info.nagent}
     CONFIG
+    # puts ext_configs into config
+    ext_configs.each do |key, value|
+      config += "#{key} = #{value}\n"
+    end
+    File.write(File.join(working_dir, 'model.cfg'), config)
   end
 
-  def self.keras_train(fast: false)
-    fill_keras_cfg
+  ##
+  # Train the model
+  # @param [Hash] ext_configs
+  # @option ext_configs [String] :epochs
+  # @option ext_configs [String] :batch_size
+  # @return [void]
+  def self.keras_train(...)
+    fill_keras_cfg(...)
 
     cmd = CONFIG['python_path'].shellsplit
     cmd << 'keras_train.py'
     cmd << working_dir
-    cmd << '--fast' if fast
 
     keras_exec cmd.shelljoin
   end
 
-  def self.keras_sample_train(with_label: nil, dummy: false)
-    fill_keras_cfg
+  ##
+  # Generate a set of samples
+  # @param [Hash] options
+  # @option options [String] :dummy (false) If true, generate random samples from uniform distribution
+  # @option options [String] :noparse
+  # @option options [String] :with_label Required unless :noparse is true
+  # @option options [String] :sample_amount
+  # @return [String, nil]
+  def self.keras_sample_train(**options)
+    with_label = options.delete(:with_label)
+    dummy = options.delete(:dummy) || false
+    noparse = options.delete(:noparse) || false
+    sample_amount = options.delete(:count) || CONFIG['sample_amount']['train']
+
+    fill_keras_cfg(options)
 
     cmd = CONFIG['python_path'].shellsplit
     cmd << 'keras_sampl.py'
     cmd << working_dir
-    cmd << '-c' << CONFIG['sample_amount']['train']
+    cmd << '-c' << sample_amount
     cmd << '--parsable'
 
     samples = keras_exec(cmd.shelljoin, capture: true)
+    return samples if noparse
+
     CSV.parse(samples, converters: :all).each do |pararmeter|
       # @parameter : An array of size 9
       pararmeter.map! { |x| (x.between?(0, 1) && !dummy) ? x : rand }
@@ -93,8 +127,8 @@ module ActiveLearningCaller
       obj.state = :raw
       obj.label = with_label
       obj.save!
-    end
-
+    end; nil
   end
 
+  reinitialize!
 end
