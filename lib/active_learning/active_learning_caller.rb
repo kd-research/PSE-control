@@ -46,7 +46,8 @@ module ActiveLearningCaller
 
   def self.working_dir
     if CONFIG['with_agentformer']
-      agentformer_base_dir = StorageLoader.get_absolute_path AF_CONFIG['result_dir']
+      agentformer_result_dir = AgentFormer.const_get(:CONFIG)['result_dir']
+      agentformer_base_dir = Snapshot.make_snapshot(agentformer_result_dir, copy: false)
       agentformer_model_yaml = AgentFormer.renderer_instance.render('agentformer')
       agentformer_model_dir = YAML.safe_load(agentformer_model_yaml)['as']
       File.join(agentformer_base_dir, agentformer_model_dir, 'latents')
