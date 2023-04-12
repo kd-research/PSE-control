@@ -1,14 +1,16 @@
+userspec:
+  hpcguest4:
+    default:
+      adapter: sqlite3
+      #database: ":memory:"
+      database: "storage/parameters.sqlite3"
+      pool: 50
+      timeout: 10000
+
+  kaidong:
+    # nothing
+
 default: &DEFAULT
-% if ENV['USER'] =~ /hpcguest/
-  adapter: sqlite3
-  #database: ":memory:"
-  database: "storage/parameters.sqlite3"
-  #username: myapp
-  #password: password1
-  pool: 50
-  timeout: 10000
-  #host: localhost
-% else
   adapter: postgresql
   database: storage_parameter_scene2
   username: myapp
@@ -16,7 +18,6 @@ default: &DEFAULT
   pool: 50
   timeout: 1000
   host: localhost
-% end
 
 test:
   <<: *DEFAULT

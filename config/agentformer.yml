@@ -1,10 +1,11 @@
-% if ENV['USER'] =~ /hpcguest/
-agent_former_base: '/home/hpc/hpcguest4/ActiveLoopProject/animated-octo-potato'
-python_path: 'singularity exec --nv /home/hpc/hpcguest4/sifs/hlsix-220922.sif /opt/conda/envs/torch/bin/python3'
-% else
-agent_former_base: '/home/kaidong/Documents/Github/animated-octo-potato'
-python_path: '/home/kaidong/.conda/envs/animated-octo-potato/bin/python'
-% end
+userspec:
+  hpcguest4:
+    agent_former_base: '/home/hpc/hpcguest4/ActiveLoopProject/animated-octo-potato'
+    python_path: 'singularity exec --nv /home/hpc/hpcguest4/sifs/hlsix-220922.sif /opt/conda/envs/torch/bin/python3'
+
+  kaidong:
+    agent_former_base: '/home/kaidong/Documents/Github/animated-octo-potato'
+    python_path: '/home/kaidong/.conda/envs/animated-octo-potato/bin/python'
 
 result_dir: 'agentformer-result'
 
