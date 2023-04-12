@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'minitest/autorun'
+require_relative '../test_helper'
 require 'ostruct'
-require_relative '../lib/steer_suite'
+
 
 class SteersimWorkerTest < Minitest::Test
   def setup

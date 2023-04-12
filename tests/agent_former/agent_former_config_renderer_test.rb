@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
+require_relative '../test_helper'
+
 require 'yaml'
-require 'minitest/autorun'
-require_relative '../lib/agent_former'
-require_relative '../lib/active_learning/agent_former_config_renderer'
 
 class AgentFormerConfigRendererTest < Minitest::Test
   def setup

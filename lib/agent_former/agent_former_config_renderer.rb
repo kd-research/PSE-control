@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'erb'
-require_relative '../agent_former'
 require_relative '../storage_loader'
 
 module AgentFormer

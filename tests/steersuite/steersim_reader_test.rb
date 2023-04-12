@@ -1,12 +1,7 @@
 # frozen_string_literal: true
 
+require_relative '../test_helper'
 require 'stringio'
-require 'minitest/autorun'
-
-require_relative 'test_asset'
-require_relative '../lib/steer_suite'
-require_relative '../lib/steersuite_utils/steersim_reader'
-require_relative '../lib/steersuite_utils/trajectory_list'
 
 class SteersimReaderTest < MiniTest::Test
   def setup

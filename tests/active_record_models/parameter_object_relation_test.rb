@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
-require 'minitest/autorun'
-require_relative '../lib/parameter_object'
-
-
+require_relative '../test_helper'
 
 ParameterDatabase.establish_connection(target: :test)
 class ParameterObjectRelationTest < Minitest::Test

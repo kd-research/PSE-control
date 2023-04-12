@@ -2,6 +2,7 @@
 
 require_relative '../test_helper'
 
+
 # noinspection RubyNilAnalysis
 class SteerSuiteInfoTest < Minitest::Test
   def setup

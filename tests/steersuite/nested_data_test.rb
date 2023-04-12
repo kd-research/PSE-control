@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-require 'minitest/autorun'
-require_relative '../lib/steersuite_utils/trajectory_list'
+require_relative '../test_helper'
 
 class NestedDataTest < Minitest::Test
   def test_equal
