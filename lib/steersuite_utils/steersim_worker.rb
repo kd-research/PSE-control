@@ -12,8 +12,6 @@ require_relative '../steer_suite'
 
 module SteerSuite
   module SteerSuiteWorkerHelper
-    Semaphore = Mutex.new
-
     ##
     # Simulate a record with no simulation attached
     # return a new record with simulation performed
@@ -27,16 +25,7 @@ module SteerSuite
       simulated = exec_simulate(parameter_obj.to_txt, benchmark_pipe: w)
       benchmark_log = r.read
 
-      Semaphore.synchronize do
-        if simulated
-          SteerSuite.document(parameter_obj, simulated)
-          BenchmarkLogs.new(parameter_object: parameter_obj, log: benchmark_log).save!
-        else
-          parameter_obj.state = :rot
-          parameter_obj.file = "INVALID"
-          parameter_obj.save!
-        end
-      end
+      { filename: simulated, benchmark_log: benchmark_log }
     end
 
     # Take steersim processing a string document and return
@@ -101,20 +90,35 @@ module SteerSuite
       FileUtils.mkdir_p(StorageLoader.get_path(CONFIG['steersuite_record_pool']))
       unsimulated = ParameterObject.with_no_simulation
       puts "Going to simulate #{unsimulated.size} scenarios"
-      Parallel.each(unsimulated, in_threads: `nproc`.to_i) do |pobj|
+      Parallel.each(unsimulated,
+                    in_threads: `nproc`.to_i,
+                    finish: lambda { |pobj, _, result|
+                               SteerSuite.document(pobj, **result)
+                               print '.'
+                             }) do |pobj|
         SteerSuite.simulate(pobj)
-        print '.'
       end
     end
 
     ##
     # Associate a parameter object to corresponding simulated binary
     # parameter may be changed during simulation due to float error
-    def document(pobj, filename)
-      data = SteerSuite.load(filename, need_trajectory: false)
-      pobj.file = File.absolute_path(filename)
-      pobj.safe_set_parameter(data.parameter)
-      pobj.save!
+    def document(pobj, filename:, benchmark_log:)
+      ActiveRecord::Base.connection_pool.with_connection do
+        unless filename
+          pobj.state = :rot
+          pobj.file = "INVALID"
+          pobj.save!
+
+          return
+        end
+
+        data = SteerSuite.load(filename, need_trajectory: false)
+        pobj.file = File.absolute_path(filename)
+        pobj.safe_set_parameter(data.parameter)
+        pobj.save!
+        BenchmarkLogs.new(parameter_object: pobj, log: benchmark_log).save!
+      end
     end
   end
 end

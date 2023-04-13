@@ -5,6 +5,7 @@ module SteerSuite
   module SteersimPostprocessor
     def process_document(raw_doc)
       sobj = raw_doc.as_scenario_obj
+      raise 'Not a scenario object' unless sobj.is_a? Scenario
       new_sobj = sobj.map_trajectory do |traj|
         oldelem = traj.elements
         newelem = oldelem.reduce({s:[], a:[oldelem.first]}) do |memo, pos|
