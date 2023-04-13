@@ -12,6 +12,7 @@ require_relative '../steer_suite'
 
 module SteerSuite
   module SteerSuiteWorkerHelper
+    Semaphore = Mutex.new
 
     ##
     # Simulate a record with no simulation attached
@@ -26,13 +27,15 @@ module SteerSuite
       simulated = exec_simulate(parameter_obj.to_txt, benchmark_pipe: w)
       benchmark_log = r.read
 
-      if simulated
-        SteerSuite.document(parameter_obj, simulated)
-        BenchmarkLogs.new(parameter_object: parameter_obj, log: benchmark_log).save!
-      else
-        parameter_obj.state = :rot
-        parameter_obj.file = "INVALID"
-        parameter_obj.save!
+      Semaphore.synchronize do
+        if simulated
+          SteerSuite.document(parameter_obj, simulated)
+          BenchmarkLogs.new(parameter_object: parameter_obj, log: benchmark_log).save!
+        else
+          parameter_obj.state = :rot
+          parameter_obj.file = "INVALID"
+          parameter_obj.save!
+        end
       end
     end
 
