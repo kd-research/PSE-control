@@ -98,12 +98,16 @@ module SteerSuite
                              }) do |pobj|
         SteerSuite.simulate(pobj)
       end
+      print "\r"
     end
 
     ##
     # Associate a parameter object to corresponding simulated binary
     # parameter may be changed during simulation due to float error
-    def document(pobj, filename:, benchmark_log:)
+    def document(pobj, *args, filename: nil, benchmark_log: nil)
+      # second positional argument may be filename
+      filename = args.fetch(0, filename)
+
       ActiveRecord::Base.connection_pool.with_connection do
         unless filename
           pobj.state = :rot
@@ -117,6 +121,7 @@ module SteerSuite
         pobj.file = File.absolute_path(filename)
         pobj.safe_set_parameter(data.parameter)
         pobj.save!
+        return unless benchmark_log
         BenchmarkLogs.new(parameter_object: pobj, log: benchmark_log).save!
       end
     end

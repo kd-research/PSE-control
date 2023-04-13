@@ -37,7 +37,7 @@ module SteerSuite
         ParameterObjectRelation.new(from: raw_doc, to: dup, relation: :process).save!
       end
 
-      print '.'
+      print('.')
     end
 
     def process_unprocessed
@@ -45,7 +45,7 @@ module SteerSuite
       unprocessed = ParameterObject.where.missing(:as_processor_relation).and ParameterObject.raw
       puts "Going to process #{unprocessed.size} files"
       unprocessed.each(&method(:process_document))
-      nil
+      print("\r")
     end
 
   end
