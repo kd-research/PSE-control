@@ -5,18 +5,22 @@ require_relative '../test_helper'
 ParameterDatabase.establish_connection(target: :test)
 class ParameterObjectTest < Minitest::Test
   def setup
-    #ParameterObject.initialize_database(force: true)
+    ParameterObject.initialize_database(force: true)
   end
 
   def test_find_record_by_parameter
-    skip("Not applicable currently")
-    5.times do |i|
-      a = ParameterObject.find(i+1)
-      result = ParameterObject.find_by_parameter(a.parameters)
-      ParameterObject.parameter_hash_func(a.parameters)
+    3.times do |i|
+      parameter_length = rand(10..20)
+      50.times do |i|
+        pobj = ParameterObject.new(label: 'budget-ground', split: :train, state: :raw, file: nil)
+        pobj.safe_set_parameter(parameter_length.times.map { rand })
+        pobj.save!
+      end
+    end
 
-      assert_equal(a.p_hash, ParameterObject.parameter_hash_func(a.parameters))
-      assert_equal(a, result)
+    ParameterObject.all.each do |pobj|
+      assert_equal(pobj.p_hash, ParameterObject.parameter_hash_func(pobj.parameters))
+      assert_equal(pobj, ParameterObject.find_by_parameter(pobj.parameters))
     end
   end
 end
