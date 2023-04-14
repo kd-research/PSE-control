@@ -7,6 +7,7 @@ require_relative '../lib/rplot'
 require_relative '../lib/steer_suite'
 class RPlotTest < Minitest::Test
   def setup
+    skip("R is not available in current platform") unless `which Rscript`.chomp != ''
     super
     @scenario_list = []
     @scenario_list << SteerSuite::Scenario.from_file(
