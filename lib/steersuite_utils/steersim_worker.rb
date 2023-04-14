@@ -110,6 +110,7 @@ module SteerSuite
 
       ActiveRecord::Base.connection_pool.with_connection do
         unless filename
+          pp "Invalid simulation result for #{pobj.id}"
           pobj.state = :rot
           pobj.file = "INVALID"
           pobj.save!
