@@ -40,9 +40,12 @@ module SteerSuite
       print('.')
     end
 
+    def unprocessed
+      ParameterObject.where.missing(:as_processor_relation).and ParameterObject.raw
+    end
+
     def process_unprocessed
       FileUtils.mkdir_p(StorageLoader.get_path(CONFIG['steersuite_process_pool']))
-      unprocessed = ParameterObject.where.missing(:as_processor_relation).and ParameterObject.raw
       puts "Going to process #{unprocessed.size} files"
       unprocessed.each(&method(:process_document))
       print("\r")

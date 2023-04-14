@@ -78,8 +78,13 @@ def cycle_train(source_label:, target_label:nil, finalize: false)
 
   start_time = Time.now
   ActiveLearningCaller.keras_sample_train(with_label: target_label, dummy: $dummy)
+
   SteerSuite.simulate_unsimulated
+  abort "Simulation failed" unless SteerSuite.unprocessed.any?
+
   SteerSuite.process_unprocessed
+  abort "Processing failed" unless SteerSuite.unprocessed.empty?
+
   puts "Agentformer #{source_label.last || "initial"} sample process use #{Time.now - start_time} seconds"
   renderer.instance_variable_set :@num_epochs, '2' unless $bycycle
 end

@@ -11,13 +11,14 @@ gem 'rake'
 gem 'yaml'
 gem 'sqlite3'
 gem 'nokogiri'
+gem 'tqdm'
 
 unless ENV['USER'] =~ /hpcguest/
   gem 'pg'
 end
 
 group :development do
-  gem 'tqdm'
   gem 'rubocop'
   gem 'simplecov'
+  gem 'pry'
 end
