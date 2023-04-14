@@ -9,24 +9,26 @@ class SteersimDocumentTest < Minitest::Test
   end
 
   def test_if_file_documented
-    allsamples = Dir.glob("#{TestAsset.get_path('steersim_binary')}/sample*.bin")
+    allsamples = Dir.glob("sample*.bin", base: TestAsset.get_path('steersim_binary'))
     allsamples.each do |sample|
       pobj = ParameterObject.new(label: 'budget-ground', split: :train, state: :raw, file: nil)
-      SteerSuite.document(pobj, sample)
+      fullname = File.join(TestAsset.get_path('steersim_binary'), sample)
+      SteerSuite.document(pobj, fullname)
       pobj.save!
     end
 
-    assert_equal(allsamples, ParameterObject.pluck(:file))
+    assert_equal(allsamples, ParameterObject.pluck(:file).map { |f| File.basename(f) })
   end
 
   def test_if_file_documented_with_keyword_arguments
-    allsamples = Dir.glob("#{TestAsset.get_path('steersim_binary')}/sample*.bin")
+    allsamples = Dir.glob("sample*.bin", base: TestAsset.get_path('steersim_binary'))
     allsamples.each do |sample|
       pobj = ParameterObject.new(label: 'budget-ground', split: :train, state: :raw, file: nil)
-      SteerSuite.document(pobj, filename: sample)
+      fullname = File.join(TestAsset.get_path('steersim_binary'), sample)
+      SteerSuite.document(pobj, filename: fullname)
       pobj.save!
     end
 
-    assert_equal(allsamples, ParameterObject.pluck(:file))
+    assert_equal(allsamples, ParameterObject.pluck(:file).map { |f| File.basename(f) })
   end
 end

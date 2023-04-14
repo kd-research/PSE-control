@@ -23,7 +23,6 @@ def init_feeding
   dirname = SteerSuite.info.data_location[:train]
   get_binary_filenames(dirname).tqdm.each do |fname|
     pobj = ParameterObject.new(split: :train, state: :processed, label: 'budget-ground')
-    pobj.label = "budget-ground"
     fullpath = File.join(dirname, fname)
     SteerSuite.document(pobj, fullpath)
     pobj.save!
@@ -32,7 +31,6 @@ def init_feeding
   dirname = SteerSuite.info.data_location[:valid]
   get_binary_filenames(dirname).tqdm.each do |fname|
     pobj = ParameterObject.new(split: :cross_valid, state: :processed, label: 'budget-ground')
-    pobj.label = "budget-ground"
     fullpath = File.join(dirname, fname)
     SteerSuite.document(pobj, fullpath)
     pobj.save!
