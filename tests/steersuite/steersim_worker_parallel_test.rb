@@ -52,6 +52,7 @@ class SteersimWorkerParallelTest < Minitest::Test
       assert_equal(10, amount_unprocessed)
 
       SteerSuite.process_unprocessed
+      assert ParameterObject.processed.count > 0
     end
   end
 end

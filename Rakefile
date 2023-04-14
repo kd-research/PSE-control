@@ -5,10 +5,6 @@ require 'yaml'
 require 'parallel'
 require "minitest/test_task"
 
-Minitest::TestTask.create # named test, sensible defaults
-
-# or more explicitly:
-
 Minitest::TestTask.create(:test) do |t|
   t.libs << "test"
   t.libs << "lib"
@@ -19,7 +15,7 @@ end
 namespace :steersuite do
   require_relative 'lib/parameter_object'
   require_relative 'lib/steer_suite'
-  ParameterObject.establish_connection
+  ParameterDatabase.establish_connection
 
   config = YAML.safe_load(File.open('config/steersuite.yml'))
 
