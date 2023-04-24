@@ -15,6 +15,12 @@ ParameterDatabase.initialize_database(force: true)
 $scene = $scene || 'scene1'
 SteerSuite.set_info($scene)
 
+$bycycle = $bycycle || false
+$dummy = $dummy || false
+$start_data = $start_data&.to_i || 4000
+
+$jobmod = "activejob-#{Random.alphanumeric}"
+
 def init_feeding
   def get_binary_filenames(dirname)
     Dir.glob("*.bin", base: dirname)
@@ -37,14 +43,40 @@ def init_feeding
   end
 end
 
-init_feeding
+def init_feeding_batch
+  def get_binary_filenames(dirname)
+    Dir.glob("*.bin", base: dirname)
+  end
 
-$bycycle = $bycycle || false
-$dummy = $dummy || false
-$start_data = $start_data&.to_i || 4000
+  loop do
+    $start_data.times.each do 
+      pobj = ParameterObject.new(split: :train, state: :raw, label: 'budget-ground')
+      pobj.safe_set_parameter(SteerSuite.info.parameter_size.times.map { rand })
+      pobj.save!
+    end
+
+    SteerSuite.simulate_unsimulated
+    SteerSuite.process_unprocessed
+    break if ParameterObject.where(split: :train, state: :processed, label: 'budget-ground').count > $start_data
+  end
+
+
+  dirname = SteerSuite.info.data_location[:valid]
+  get_binary_filenames(dirname).tqdm.each do |fname|
+    pobj = ParameterObject.new(split: :cross_valid, state: :processed, label: 'budget-ground')
+    fullpath = File.join(dirname, fname)
+    SteerSuite.document(pobj, fullpath)
+    pobj.save!
+  end
+end
+
+if $batch
+  init_feeding_batch
+else
+  init_feeding
+end
 
 $budget_base = ParameterObject.where(split: :train, state: :processed, label: 'budget-ground').limit($start_data).pluck(:file)
-$jobmod = "activejob-#{Random.alphanumeric}"
 
 def cycle_train(source_label:, target_label:nil, finalize: false)
   train_files = ParameterObject.where(split: :train, state: :processed, label: source_label).pluck(:file) + $budget_base
