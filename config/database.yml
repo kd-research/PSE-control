@@ -2,7 +2,6 @@ userspec:
   hpcguest4:
     default:
       adapter: sqlite3
-      #database: ":memory:"
       database: "storage/parameters.sqlite3"
       pool: 50
       timeout: 10000
@@ -23,3 +22,9 @@ test:
   <<: *DEFAULT
   adapter: sqlite3
   database: '/tmp/test.sqlite3'
+
+tmp:
+  adapter: sqlite3
+  database: ":memory:"
+  pool: 50
+  timeout: 1000
