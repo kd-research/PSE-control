@@ -1,5 +1,12 @@
 #!/bin/bash
 
+if [ -e $2.out]
+  >&2 echo $2.out File already exists. Protectively reject submitting job
+  exit 1
+fi
+
+touch $2.out
+
 cat << HERE | sbatch
 #!/bin/bash
 
