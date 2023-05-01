@@ -94,11 +94,11 @@ module SteerSuite
                     in_threads: `nproc`.to_i,
                     finish: lambda { |pobj, _, result|
                                SteerSuite.document(pobj, **result)
-                               print '.'
+                               print '.' if STDOUT.tty?
                              }) do |pobj|
         SteerSuite.simulate(pobj)
       end
-      print "\r"
+      print "\r" if STDOUT.tty?
     end
 
     ##

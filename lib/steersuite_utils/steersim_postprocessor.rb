@@ -37,7 +37,7 @@ module SteerSuite
         ParameterObjectRelation.new(from: raw_doc, to: dup, relation: :process).save!
       end
 
-      print('.')
+      print('.') if STDOUT.tty?
     end
 
     def unprocessed
@@ -48,7 +48,7 @@ module SteerSuite
       FileUtils.mkdir_p(StorageLoader.get_path(CONFIG['steersuite_process_pool']))
       puts "Going to process #{unprocessed.size} files"
       unprocessed.each(&method(:process_document))
-      print("\r")
+      print("\r") if STDOUT.tty?
     end
 
   end

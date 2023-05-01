@@ -17,6 +17,7 @@ scene_defs:
   - scene4
   - scene5
   - scene6
+  - scene7
 
 steersuite_scene:
   basic:
@@ -38,4 +39,7 @@ steersuite_scene:
     scene6:
       parameter_size: 15
       nagent: 4
+    scene7:
+      parameter_size: 19
+      nagent: 6
 
