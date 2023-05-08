@@ -22,7 +22,7 @@ module SteerSuite
 
     def prepare_steer_sim_config!
       # based on scene name, config scene name is 'sceneBasic(%num)'
-      default_scene_name = "sceneBasic#{@scene[-1]}"
+      default_scene_name = "sceneBasic#{@scene[/\d+/]}"
       scene_name = @scene_config.fetch('scene_name', default_scene_name)
       SteerSuite::SteersimConfigEditor.change_scene(scene_name)
     end

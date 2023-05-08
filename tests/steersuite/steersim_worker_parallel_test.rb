@@ -5,6 +5,7 @@ require_relative "../test_helper"
 
 ActiveRecord::Base.establish_connection(adapter: "sqlite3", database: "#{Dir.mktmpdir}/test.sqlite3")
 
+CURRENT_STEERSUITE_SCENE_MAX = 10
 describe SteerSuite::SteerSuiteWorkerHelper do
   before do
     SteerSuite.reinitialize!
@@ -35,7 +36,8 @@ describe SteerSuite::SteerSuiteWorkerHelper do
     end
   end
 
-  %w[scene1 scene2 scene3 scene4].each do |scene|
+  (1..CURRENT_STEERSUITE_SCENE_MAX).each do |scenenum|
+    scene = "scene#{scenenum}"
     it "should work with #{scene}" do
       SteerSuite.set_info(scene)
 
@@ -58,8 +60,9 @@ describe SteerSuite::SteerSuiteWorkerHelper do
     end
   end
 
-  it "won't work with scene5" do
-    SteerSuite::SteersimConfigEditor.change_scene('sceneBasic5')
+  scene_not_exist = "sceneBasic#{CURRENT_STEERSUITE_SCENE_MAX+1}"
+  it "won't work with #{scene_not_exist}" do
+    SteerSuite::SteersimConfigEditor.change_scene(scene_not_exist)
 
     10.times do
       p = ParameterObject.new(label: 'budget-ground', split: :train, state: :raw, file: nil)
