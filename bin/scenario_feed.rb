@@ -14,8 +14,7 @@ def get_binary_filenames(dirname)
   Dir.glob(File.join(dirname, "*.bin"))
 end
 
-%w[scene8].each do |scene|
-
+$scene.split(',').each do |scene|
   SteerSuite.reinitialize!
 
   SteerSuite.set_info(scene)
