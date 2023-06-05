@@ -22,7 +22,7 @@ class ActiveLearningTest < Minitest::Test
     execute_one_cycle
   end
 
-  %w[scene8].each do |scene|
+  %w[scene7 scene8].each do |scene|
     define_method("test_external_scene_#{scene}") do
       scene_path = StorageLoader.get_path("#{scene}-base-data")
       skip("external scene is not set") unless Dir.exist?(scene_path)
@@ -75,8 +75,8 @@ class ActiveLearningTest < Minitest::Test
   def setup_external_scene(path, n:, from_record: false)
     absoulte_path = File.absolute_path(path)
     if from_record
-      train_list = Dir.glob(File.join(absoulte_path, 'record', '*.bin')).sample(n)
-      valid_list = Dir.glob(File.join(absoulte_path, 'record', '*.bin')).sample(n)
+      train_list = Dir.glob(File.join(absoulte_path, 'record', '*.bin')).select {|f| SteerSuite.load(f).valid? }.sample(n)
+      valid_list = Dir.glob(File.join(absoulte_path, 'record', '*.bin')).select { |f| SteerSuite.load(f).valid? }.sample(n)
       test_list = []
     else
       train_list = Dir.glob(File.join(absoulte_path, 'train', '*.bin')).sample(n)

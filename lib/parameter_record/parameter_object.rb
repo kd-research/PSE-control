@@ -29,7 +29,7 @@ class ParameterObject < ActiveRecord::Base
 
   ALL_SPLIT = %w[split_nil train cross_valid test prediction active_train].freeze
   enum split: ALL_SPLIT.zip(ALL_SPLIT).to_h
-  ALL_STATE = %w[state_nil raw processed rot].freeze
+  ALL_STATE = %w[state_nil raw processed rot valid_raw].freeze
   enum state: ALL_STATE.zip(ALL_STATE).to_h
 
   has_one :benchmark, class_name: 'BenchmarkLogs'

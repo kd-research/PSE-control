@@ -63,6 +63,10 @@ module SteerSuite
         end
       end
 
+      def valid?
+        @elements.all? {|x| x.r < 1e10}
+      end
+
       def ==(other)
         false if other.class != self.class
         elements == other.elements

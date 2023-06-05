@@ -51,6 +51,17 @@ module SteerSuite
       print("\r") if STDOUT.tty?
     end
 
+    def mark_validation
+      ParameterObject.raw.each do |doc|
+        doc.state = if doc.as_scenario_obj.valid?
+                      :valid_raw
+                    else
+                      :rot
+                    end
+        doc.save!
+      end
+    end
+
   end
 
 end

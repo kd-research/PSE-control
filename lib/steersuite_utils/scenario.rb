@@ -7,7 +7,15 @@ require_relative 'steersim_worker'
 
 module SteerSuite
   module Data
-    SteersimBinary = Struct.new(:filename, :object_type, :object_info, :parameter, :agent_data)
+    SteersimBinary = Struct.new(:filename, :object_type, :object_info, :parameter, :agent_data) do
+      def valid?
+        agent_data.all?(&:valid?)
+      end
+
+      def invalid?
+        !valid?
+      end
+    end
   end
   class Scenario < Data::NestedData
     extend Forwardable
