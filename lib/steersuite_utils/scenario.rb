@@ -17,9 +17,10 @@ module SteerSuite
       end
     end
   end
+
   class Scenario < Data::NestedData
     extend Forwardable
-    def_delegators :@elements, *Data::SteersimBinary.members
+    def_delegators :@elements, *Data::SteersimBinary.members, :valid?, :invalid?
 
     def self.from_file(filename)
       new(SteerSuite.load(filename, need_trajectory: true))

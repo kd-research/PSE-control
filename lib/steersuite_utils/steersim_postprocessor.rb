@@ -37,7 +37,7 @@ module SteerSuite
         ParameterObjectRelation.new(from: raw_doc, to: dup, relation: :process).save!
       end
 
-      print('.') if STDOUT.tty?
+      print('.') if $stdout.tty?
     end
 
     def unprocessed
@@ -48,17 +48,25 @@ module SteerSuite
       FileUtils.mkdir_p(StorageLoader.get_path(CONFIG['steersuite_process_pool']))
       puts "Going to process #{unprocessed.size} files"
       unprocessed.each(&method(:process_document))
-      print("\r") if STDOUT.tty?
+      print("\r") if $stdout.tty?
     end
 
     def mark_validation
-      ParameterObject.raw.each do |doc|
+      puts "Going to validate #{ParameterObject.raw.count} files"
+      mark_proc = proc do |doc|
         doc.state = if doc.as_scenario_obj.valid?
                       :valid_raw
                     else
                       :rot
                     end
         doc.save!
+      end
+      
+      if $stdout.tty?
+        ParameterObject.raw.tqdm.each(&mark_proc)
+        print("\r\n")
+      else
+        ParameterObject.raw.each(&mark_proc)
       end
     end
 

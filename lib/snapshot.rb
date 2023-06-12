@@ -39,7 +39,7 @@ module Snapshot
   def make_snapshot(path, copy: !$NOINIT)
     basename = File.basename(path)
     target = File.join(SNAPSHOT_PATH, basename)
-    FileUtils.cp_r(path, target) if copy
+    FileUtils.cp_r(path, SNAPSHOT_PATH) if copy
     target
   end
 
