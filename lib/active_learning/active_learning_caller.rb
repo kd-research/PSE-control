@@ -4,6 +4,7 @@ require 'English'
 require 'csv'
 require 'open3'
 require 'shellwords'
+require 'active_support/core_ext/hash/keys'
 require_relative '../snapshot'
 require_relative '../config_loader'
 require_relative '../agent_former'
@@ -43,7 +44,7 @@ module ActiveLearningCaller
       'PYTHON_PATH' => "#{ENV['PYTHON_PATH']}:#{PROJECT_BASE}"
     }
     if capture
-      out, _ = Open3.capture2(env_patch, cmd, chdir: PROJECT_BASE)
+      out, = Open3.capture2(env_patch, cmd, chdir: PROJECT_BASE)
       out
     else
       pid = spawn(env_patch, cmd, chdir: PROJECT_BASE)
@@ -65,15 +66,18 @@ module ActiveLearningCaller
   end
 
   def self.fill_keras_cfg(ext_configs = {})
-    config = <<~CONFIG
-      parameter_size = #{SteerSuite.info.parameter_size}
-      nagent = #{SteerSuite.info.nagent}
-    CONFIG
+    configs = {
+      parameter_size: SteerSuite.info.parameter_size,
+      nagent: SteerSuite.info.nagent,
+      nframe: AgentFormer.renderer_instance['past_frames'],
+      nhead: AgentFormer.renderer_instance['sample_k'],
+    }
+    configs[:nelem] = %i[nagent nframe nhead].map { |key| configs[key] }.reduce(:*)
     # puts ext_configs into config
-    ext_configs.each do |key, value|
-      config += "#{key} = #{value}\n"
-    end
-    File.write(File.join(working_dir, 'model.cfg'), config)
+    configs.merge!(ext_configs)
+    configs.stringify_keys!
+    ftarget = File.join(working_dir, 'model.yml')
+    File.write(ftarget, YAML.dump(configs))
   end
 
   ##
