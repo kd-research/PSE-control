@@ -17,7 +17,14 @@ module SteerSuite
 
     def data_location
       base = StorageLoader.get_path("#{@scene}-base-data")
-      { train: File.join(base, 'train'), valid: File.join(base, 'valid'), test: File.join(base, 'test'), base: base }
+      {
+        train: File.join(base, 'train'),
+        valid: File.join(base, 'valid'),
+        train20: File.join(base, 'train-20fps'),
+        valid20: File.join(base, 'valid-20fps'),
+        test: File.join(base, 'test'),
+        base: base
+      }
     end
 
     def prepare_steer_sim_config!
