@@ -12,6 +12,7 @@ require_relative '../steer_suite'
 
 module SteerSuite
   module SteerSuiteWorkerHelper
+    class BadSimulationError < StandardError; end
     ##
     # Simulate a record with no simulation attached
     # return a new record with simulation performed
@@ -65,24 +66,45 @@ module SteerSuite
         return nil
       end
 
-      simulated = ''
-      options = { chdir: workdir }
-      options[5] = benchmark_pipe if benchmark_pipe
-      Open3.popen2e(env_patch, command, **options) do |i, o, _|
-        benchmark_pipe&.close
-        i.puts(doc)
-        if $DEBUG
-          logs = o.readlines
-          puts '=================='
-          puts logs
-          ret = logs.slice_after { |l| l == "Finished scenario 0\n" }.to_a.at(1)
-          o = StringIO.new(ret.join)
-        else
-          o.expect("Finished scenario 0\n")
+      retry_count = 0
+      retry_max = 10
+
+      begin
+
+        simulated = nil
+        options = { chdir: workdir }
+        options[5] = benchmark_pipe if benchmark_pipe
+        Open3.popen2e(env_patch, command, **options) do |i, o, w|
+          i.puts(doc)
+          buffer = o.readlines
+          if $DEBUG
+            puts '=================='
+            puts buffer
+          end
+
+          raise BadSimulationError if w.value != 0 && buffer.include?("Corrupted simulator!\n")
+
+          if buffer.include?("Finished scenario 0\n")
+            simulated = buffer.slice_after { |l| l == "Finished scenario 0\n" }.to_a.dig(1, 0)&.chomp
+          else
+            puts "Bad simulation result for #{doc.first(10)}, dump last 3 lines and discard."
+            puts(buffer.last(3).map { |l| "[#{doc.first(10)}]: #{l.chomp}" })
+          end
         end
-        simulated = o.gets&.chomp
+
+      rescue BadSimulationError
+        retry_count += 1
+        if retry_count <= retry_max
+          puts <<~MESSAGE
+            Bad simulation result for "#{doc.first(10)}...", retrying (#{retry_count}/#{retry_max})...
+          MESSAGE
+          retry
+        else
+          puts %(Bad simulation result for "#{doc.first(10)}...", simulation failed.)
+        end
       end
 
+      benchmark_pipe&.close
       simulated
     end
 
@@ -123,6 +145,7 @@ module SteerSuite
         pobj.safe_set_parameter(data.parameter)
         pobj.save!
         return unless benchmark_log
+
         BenchmarkLogs.new(parameter_object: pobj, log: benchmark_log).save!
       end
     end

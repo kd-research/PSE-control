@@ -8,6 +8,8 @@ module SteerSuite
   module SteerSuiteReaderHelper
     def load(filename, need_trajectory: true)
       SteersimBinaryHandler.new(File.open(filename, 'rb')).readbin(need_trajectory: need_trajectory)
+    rescue StandardError => e
+      raise StandardError, "Error loading #{filename.inspect}: #{e}"
     end
 
     def dump(filename, data)
