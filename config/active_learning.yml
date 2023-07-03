@@ -1,6 +1,6 @@
 userspec:
   hpcguest4:
-    python_path: 'singularity exec --nv /home/hpc/hpcguest4/sifs/keras.sif /opt/conda/envs/tf2/bin/python3'
+    python_path: 'singularity exec --nv /home/hpc/hpcguest4/sifs/keras-230703.sif /opt/conda/envs/tf2/bin/python3'
     active_learning_keras_base: "/home/hpc/hpcguest4/ActiveLoopProject/pkl-keras-train"
   kaidong:
     python_path: '/home/kaidong/.conda/envs/tf2/bin/python'
