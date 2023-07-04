@@ -121,7 +121,7 @@ def cycle_train(source_label:, target_label:nil, finalize: false)
   abort "Processing failed" unless SteerSuite.unprocessed.empty?
 
   puts "Agentformer #{source_label.last || "initial"} sample process use #{Time.now - start_time} seconds"
-  renderer.instance_variable_set :@num_epochs, '2' unless $bycycle
+  renderer.instance_variable_set :@num_epochs, '1' unless $bycycle
 end
 
 batch_labels = []
@@ -129,7 +129,7 @@ batch_labels = []
 ParameterObject.where(label: batch_labels).delete_all
 
 renderer = AgentFormer.renderer_instance
-renderer.instance_variable_set :@num_epochs, '5'
+renderer.instance_variable_set :@num_epochs, '1'
 
 batch_labels.each_index do |idx|
   cycle_train(source_label: batch_labels[...idx], target_label: batch_labels[idx])

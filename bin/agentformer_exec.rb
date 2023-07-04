@@ -73,7 +73,7 @@ end
 if $batch
   init_feeding_batch
 else
-  init_feeding
+  init_feeding_batch
 end
 
 $budget_base = ParameterObject.where(split: :train, state: :processed, label: 'budget-ground').limit($start_data).pluck(:file)

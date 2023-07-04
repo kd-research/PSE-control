@@ -1,0 +1,20 @@
+#!/bin/bash
+
+cat << HERE | sbatch
+#!/bin/bash
+
+#SBATCH --job-name=rake-test
+#SBATCH --output=test-result-verb.log
+#SBATCH --ntasks=10
+#SBATCH --nodes=1
+#SBATCH --partition=gpu
+#SBATCH --gres=gpu:1
+#SBATCH --constraint="rtx2080"
+#SBATCH --mail-user=hukaidonghkd@gmail.com
+#SBATCH --mail-type=ALL
+
+module load singularity || true
+
+set -xe
+rake --verbose test
+HERE
