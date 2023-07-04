@@ -55,7 +55,7 @@ class SegmentedActiveLearningTest < Minitest::Test
     assert File.exist?(File.join(latent_path, 'result_model.index')), "result model does not exist in #{latent_path}"
 
     sample = ActiveLearningCaller.keras_sample_train(noparse: true, count: 1)
-    assert_equal 1, sample.lines.size, "sample size does not match"
+    assert_equal 1, sample.lines.size, "sample size does not match, samples: #{sample.inspect}"
   end
 
   def setup_agentformer_config_instance
