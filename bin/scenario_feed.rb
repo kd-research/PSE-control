@@ -5,8 +5,8 @@ require_relative '../lib/steer_suite'
 require_relative '../lib/parameter_record/parameter_object'
 require_relative '../lib/parameter_record/parameter_object_relation'
 
-$amount = 16000
-$try_amount = 100
+$amount = $amount&.to_i || 16000
+$try_amount = $try_amount&.to_i || 100
 
 ParameterDatabase.establish_connection(target: :tmp)
 

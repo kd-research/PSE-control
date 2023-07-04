@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'test_helper'
-class ActiveLearningTest < Minitest::Test
+class SegmentedActiveLearningTest < Minitest::Test
   def setup
     Snapshot.set_snapshot_base(Dir.tmpdir)
     AgentFormer.reinitialize!
@@ -52,7 +52,6 @@ class ActiveLearningTest < Minitest::Test
     end
 
     ActiveLearningCaller.keras_train(epochs: 1)
-    alc_config = File.read(File.join(latent_path, 'model.cfg'))
     assert File.exist?(File.join(latent_path, 'result_model.index')), "result model does not exist in #{latent_path}"
 
     sample = ActiveLearningCaller.keras_sample_train(noparse: true, count: 1)
@@ -83,6 +82,8 @@ class ActiveLearningTest < Minitest::Test
       valid_list = Dir.glob(File.join(absoulte_path, 'valid', '*.bin')).sample(n)
       test_list = []
     end
+    refute_empty train_list, "train list is empty"
+    refute_empty valid_list, "valid list is empty"
     @instance.set_data_source(train_list, valid_list, test_list)
   end
 
