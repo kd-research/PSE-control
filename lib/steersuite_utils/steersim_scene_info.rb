@@ -16,7 +16,7 @@ module SteerSuite
     end
 
     def data_location
-      base = StorageLoader.get_path("#{@scene}-base-data")
+      base = StorageLoader.get_path("#{@scene.tr('_', '-')}-base-data")
       {
         train: File.join(base, 'train'),
         valid: File.join(base, 'valid'),
@@ -28,9 +28,14 @@ module SteerSuite
     end
 
     def prepare_steer_sim_config!
-      # based on scene name, config scene name is 'sceneBasic(%num)'
-      default_scene_name = "sceneBasic#{@scene[/\d+/]}"
-      scene_name = @scene_config.fetch('scene_name', default_scene_name)
+      case @scene
+      when /scene\d{1,4}/
+        # based on scene name, config scene name is 'sceneBasic(%num)'
+        default_scene_name = "sceneBasic#{@scene[/\d+/]}"
+        scene_name = @scene_config.fetch('scene_name', default_scene_name)
+      else
+        scene_name = @scene_config.fetch('scene_name')
+      end
       SteerSuite::SteersimConfigEditor.change_scene(scene_name)
     end
   end
