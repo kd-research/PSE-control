@@ -20,7 +20,11 @@ $scene.split(',').each do |scene|
   SteerSuite.set_info(scene)
   steersuite_config = SteerSuite.get_config.dup
   steersuite_config['steersuite_record_pool'] = File.join(SteerSuite.info.data_location[:base], 'record')
-  steersuite_config['steersuite_process_pool'] = File.join(SteerSuite.info.data_location[:base], 'process')
+  if $noprocess
+    steersuite_config['steersuite_process_pool'] = steersuite_config['steersuite_record_pool']
+  else
+    steersuite_config['steersuite_process_pool'] = File.join(SteerSuite.info.data_location[:base], 'process')
+  end
 
   SteerSuite.module_eval do
     remove_const(:CONFIG)
@@ -36,7 +40,7 @@ $scene.split(',').each do |scene|
     end
 
     SteerSuite.simulate_unsimulated
-    SteerSuite.process_unprocessed
+    SteerSuite.process_unprocessed unless $noprocess
   end
 
 end
