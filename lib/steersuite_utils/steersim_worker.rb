@@ -102,9 +102,10 @@ module SteerSuite
         else
           puts %(Bad simulation result for "#{doc.first(10)}...", simulation failed.)
         end
+      ensure
+        benchmark_pipe&.close
       end
 
-      benchmark_pipe&.close
       simulated
     end
 
