@@ -1,9 +1,10 @@
+#!/usr/bin/env -S ruby -s -Ilib
 require 'tqdm'
 require 'fileutils'
 
-require_relative '../lib/steer_suite'
-require_relative '../lib/parameter_record/parameter_object'
-require_relative '../lib/parameter_record/parameter_object_relation'
+require 'steer_suite'
+require 'parameter_record/parameter_object'
+require 'parameter_record/parameter_object_relation'
 
 $amount = $amount&.to_i || 16000
 $try_amount = $try_amount&.to_i || 100
@@ -33,9 +34,14 @@ $scene.split(',').each do |scene|
 
   until Dir["#{steersuite_config['steersuite_process_pool']}/*.bin"].size > $amount
     ParameterDatabase.initialize_database(force: true)
+    def equal_rand(size: 25)
+      Array.new(5) { rand } * size
+    end
     $try_amount.times.tqdm.each do
       pobj = ParameterObject.new(split: :train, state: :raw, label: 'budget-ground')
-      pobj.safe_set_parameter(SteerSuite.info.parameter_size.times.map { rand })
+      pobj.safe_set_parameter(
+        [rand] + equal_rand(size: 75)
+      )
       pobj.save!
     end
 

@@ -1,3 +1,5 @@
+#!/usr/bin/env -S ruby -s -Ilib
+
 require 'yaml'
 require 'tqdm'
 require 'pathname'

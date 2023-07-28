@@ -43,5 +43,9 @@ module Snapshot
     target
   end
 
+  def recover_snapshot_from(path)
+    make_snapshot("#{path}/agentformer-result")
+  end
+
   reinitialize!
 end
