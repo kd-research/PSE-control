@@ -9,5 +9,5 @@ userspec:
 with_agentformer: true
 #working_directory: "/home/kaidong/PycharmProjects/pkl-keras-train"
 sample_amount:
-  train: 1000
+  train: 500
   valid: 0

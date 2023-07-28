@@ -25,6 +25,7 @@ module SteerSuite
       r, w = IO.pipe
       simulated = exec_simulate(parameter_obj.to_txt, benchmark_pipe: w)
       benchmark_log = r.read
+      r.close
 
       { filename: simulated, benchmark_log: benchmark_log }
     end
@@ -102,7 +103,7 @@ module SteerSuite
         else
           puts %(Bad simulation result for "#{doc.first(10)}...", simulation failed.)
         end
-      ensure
+      ensure 
         benchmark_pipe&.close
       end
 
