@@ -64,7 +64,7 @@ module SteerSuite
       end
 
       def valid?
-        @elements.all? {|x| x.r < 1e10}
+        @elements.size < 3000 && @elements.all? { |x| x.r < 1e10 }
       end
 
       def ==(other)

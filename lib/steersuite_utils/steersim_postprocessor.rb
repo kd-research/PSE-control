@@ -51,18 +51,13 @@ module SteerSuite
       print("\r") if $stdout.tty?
     end
 
-    def mark_valid!
-      puts "marking all new scenario as valid without verifying them.."
-      ParameterObject.raw.update(state: :valid_raw)
-      puts "done."
-    end
-
     def validate_raw
       puts "Going to validate #{ParameterObject.raw.count} files"
       mark_proc = proc do |doc|
         doc.state = if doc.as_scenario_obj.valid?
                       :valid_raw
                     else
+                      puts "Bad simulation result for #{doc.file}"
                       :rot
                     end
         doc.save!

@@ -33,8 +33,7 @@ valid_records.tqdm.each do |fname|
 end
 print("\r\n")
 
-SteerSuite.mark_valid!
-
+SteerSuite.validate_raw
 
 train_files = ParameterObject.where(split: :train, state: :valid_raw, label: 'budget-ground').pluck(:file)
 valid_files = ParameterObject.where(split: :cross_valid, state: :valid_raw, label: 'budget-ground').pluck(:file)
@@ -45,7 +44,7 @@ renderer.instance_variable_set :@num_epochs, 10
 renderer.instance_variable_set :@extra, "agent_num: #{$agent_num}\n"
 renderer.set_data_source(train_files, valid_files, [])
 
-#AgentFormer.call_agentformer
+AgentFormer.call_agentformer
 AgentFormer.call_latent_dump
 ActiveLearningCaller.keras_train(segmented: true)
 ActiveLearningCaller.keras_sample_train(segmented: true)
