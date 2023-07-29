@@ -15,10 +15,12 @@ cat << HERE | sbatch
 #SBATCH --ntasks=28
 #SBATCH --nodes=1
 #SBATCH --partition=long
+#SBATCH --mail-user=hukaidonghkd@gmail.com
+#SBATCH --mail-type=ALL
 
 module load singularity || true
 
 set -xe
-ruby -s $1 ${@:3}
+ruby -s -Ilib $1 ${@:3}
 
 HERE
