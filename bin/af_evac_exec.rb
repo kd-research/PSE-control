@@ -11,7 +11,11 @@ $agent_num ||= "10"
 ParameterDatabase.establish_connection
 ParameterDatabase.initialize_database(force: true)
 
-SteerSuite.set_info('scene_evac_1')
+if $subdir
+  SteerSuite.set_info('scene_evac_1', subdir: $subdir)
+else
+  raise "Specify subdir"
+end
 
 def get_binary_filenames(dirname)
   Dir.glob("#{dirname}/*.bin")

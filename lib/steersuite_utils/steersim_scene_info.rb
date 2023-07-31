@@ -2,8 +2,9 @@
 
 module SteerSuite
   class SteersimSceneInfo
-    def initialize(scene)
+    def initialize(scene, subdir: nil)
       @scene = scene
+      @subdir = subdir
       @scene_config = CONFIG.dig('steersuite_scene', 'basic', @scene)
     end
 
@@ -17,6 +18,7 @@ module SteerSuite
 
     def data_location
       base = StorageLoader.get_path("#{@scene.tr('_', '-')}-base-data")
+      base = File.join(base, @subdir) if @subdir
       {
         train: File.join(base, 'train'),
         valid: File.join(base, 'valid'),

@@ -36,18 +36,18 @@ module SteerSuite
 
   # @param [String] scene
   # @return [nil]
-  def self.set_info(scene)
+  def self.set_info(scene, ...)
     unless CONFIG['scene_defs'].include? scene
       raise ArgumentError, "Scene #{scene} not defined in config/steersuite.yml"
     end
 
-    @info = SteersimSceneInfo.new(scene)
+    @info = SteersimSceneInfo.new(scene, ...)
     # noinspection RubyNilAnalysis
     @info.prepare_steer_sim_config!
     nil
   end
 
-  # @return [SteersimSceneInfo, nil]
+  # @return [SteersimSceneInfo]
   def self.info
     @info || raise('No scene info set')
   end
