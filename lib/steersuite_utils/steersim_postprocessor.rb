@@ -51,13 +51,14 @@ module SteerSuite
       print("\r") if $stdout.tty?
     end
 
-    def validate_raw
+    def validate_raw(remove: false)
       puts "Going to validate #{ParameterObject.raw.count} files"
       mark_proc = proc do |doc|
         doc.state = if doc.as_scenario_obj.valid?
                       :valid_raw
                     else
                       puts "Bad simulation result for #{doc.file}" if $DEBUG
+                      FileUtils.rm_f(doc.file) if remove
                       :rot
                     end
         doc.save!
