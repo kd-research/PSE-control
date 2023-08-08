@@ -114,15 +114,24 @@ module SteerSuite
       FileUtils.mkdir_p(StorageLoader.get_path(CONFIG['steersuite_record_pool']))
       unsimulated = ParameterObject.with_no_simulation
       puts "Going to simulate #{unsimulated.size} scenarios"
-      Parallel.each(unsimulated,
-                    in_threads: `nproc`.to_i,
-                    finish: lambda { |pobj, _, result|
-                               SteerSuite.document(pobj, **result)
-                               print '.' if STDOUT.tty?
-                             }) do |pobj|
-        SteerSuite.simulate(pobj)
+      if $stdin.isatty
+        Parallel.each(unsimulated,
+                      in_threads: `nproc`.to_i,
+                      progress: 'Simulating',
+                      finish: lambda { |pobj, _, result|
+                        SteerSuite.document(pobj, **result)
+                      }) do |pobj|
+          SteerSuite.simulate(pobj)
+        end
+      else
+        Parallel.each(unsimulated,
+                      in_threads: `nproc`.to_i,
+                      finish: lambda { |pobj, _, result|
+                                 SteerSuite.document(pobj, **result)
+                               }) do |pobj|
+          SteerSuite.simulate(pobj)
+        end
       end
-      print "\r" if STDOUT.tty?
     end
 
     ##

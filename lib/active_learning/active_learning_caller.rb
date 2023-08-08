@@ -82,6 +82,8 @@ module ActiveLearningCaller
 #   File.write(ftarget, YAML.dump(configs))
   end
 
+  deprecate :fill_keras_cfg
+
   ##
   # Train the model
   # @param [Hash] ext_configs

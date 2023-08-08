@@ -20,10 +20,11 @@ $scene.split(',').each do |scene|
 
   SteerSuite.set_info(scene)
   steersuite_config = SteerSuite.get_config.dup
-  steersuite_config['steersuite_record_pool'] = File.join(SteerSuite.info.data_location[:base], 'record')
+  steersuite_config['steersuite_record_pool'] = File.join(SteerSuite.info.data_location[:base], 'identity-record')
   if $noprocess
     steersuite_config['steersuite_process_pool'] = steersuite_config['steersuite_record_pool']
   else
+    raise
     steersuite_config['steersuite_process_pool'] = File.join(SteerSuite.info.data_location[:base], 'process')
   end
 
@@ -40,7 +41,7 @@ $scene.split(',').each do |scene|
     $try_amount.times.tqdm.each do
       pobj = ParameterObject.new(split: :train, state: :raw, label: 'budget-ground')
       pobj.safe_set_parameter(
-        [rand] + equal_rand(size: 75)
+        [rand] + equal_rand(size:75)
       )
       pobj.save!
     end

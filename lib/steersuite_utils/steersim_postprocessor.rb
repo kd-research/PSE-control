@@ -57,7 +57,7 @@ module SteerSuite
         doc.state = if doc.as_scenario_obj.valid?
                       :valid_raw
                     else
-                      puts "Bad simulation result for #{doc.file}"
+                      puts "Bad simulation result for #{doc.file}" if $DEBUG
                       :rot
                     end
         doc.save!
