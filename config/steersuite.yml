@@ -22,6 +22,7 @@ scene_defs:
   - scene9
   - scene10
   - scene_evac_1
+  - scene_evac_2
 
 steersuite_scene:
   basic:
@@ -56,7 +57,12 @@ steersuite_scene:
       parameter_size: 17
       nagent: 5
     scene_evac_1:
-      scene_name: "sceneEvac1"
+      scene_name: sceneEvac1
       parameter_size: 376
       nagent: 75
+    scene_evac_2:
+      scene_name: sceneEvac2
+      parameter_size: 976
+      nagent: 75
+      ai: social-force
 

@@ -39,6 +39,10 @@ module SteerSuite
         scene_name = @scene_config.fetch('scene_name')
       end
       SteerSuite::SteersimConfigEditor.change_scene(scene_name)
+
+      if @scene_config['ai']
+        SteerSuite::SteersimConfigEditor.set_ai(@scene_config['ai'])
+      end
     end
   end
 

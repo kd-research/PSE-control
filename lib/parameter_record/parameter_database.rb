@@ -31,7 +31,7 @@ module ParameterDatabase
   end
 
   def load_from_directory(dirname, **kwargs)
-    valid_method = kwargs.delete(:valid_method) || :mark_only
+    valid_method = kwargs.delete(:valid_method)
     files = Dir.glob(File.join(dirname, '*.bin'))
     files = files.tqdm if $stdout.isatty
 
@@ -48,6 +48,10 @@ module ParameterDatabase
       SteerSuite.validate_raw(remove: false)
     when :validate_and_clean
       SteerSuite.validate_raw(remove: true)
+    when nil
+      # do nothing
+    else
+      raise ArgumentError, "invalid valid_method: #{valid_method}"
     end
   end
 end

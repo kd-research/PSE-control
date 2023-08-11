@@ -40,6 +40,13 @@ class SteerSuiteInfoTest < Minitest::Test
     end
   end
 
+  def test_set_ai
+    SteerSuite.set_info('scene1')
+    SteerSuite::SteersimConfigEditor.set_ai('social-force')
+    assert_empty SteerSuite.const_get('SteersimConfig').css('spatialDatabase')
+    assert_equal 'sfAI', SteerSuite.const_get('SteersimConfig').css('scenarioAI').first.text
+  end
+
   private
   def verify_data_location(scene)
     SteerSuite.set_info(scene)

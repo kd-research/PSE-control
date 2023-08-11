@@ -77,6 +77,23 @@ describe SteerSuite::SteerSuiteWorkerHelper do
 
   end
 
+  it "should work with evac scenario 2" do
+    SteerSuite.set_info("scene_evac_2")
+
+    10.times do
+      p = ParameterObject.new(label: 'budget-ground', split: :train, state: :raw, file: nil)
+      p.safe_set_parameter(SteerSuite.info.parameter_size.times.map { rand })
+      p.save!
+    end
+
+    SteerSuite.simulate_unsimulated
+
+    assert_equal(0, ParameterObject.with_no_simulation.count)
+    assert BenchmarkLogs.any?
+    assert SteerSuite.unprocessed.any?
+
+  end
+
   scene_not_exist = "sceneBasic#{CURRENT_STEERSUITE_SCENE_MAX+1}"
   it "won't work with #{scene_not_exist}" do
     SteerSuite::SteersimConfigEditor.change_scene(scene_not_exist)

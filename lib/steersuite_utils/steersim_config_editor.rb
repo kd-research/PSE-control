@@ -10,6 +10,14 @@ module SteerSuite
       SteersimConfig.at('#scene-type').replace(new_scene)
     end
 
-    module_function :change_scene
+    def set_ai(ai_type)
+      case ai_type
+      when 'social-force'
+        SteersimConfig.search("spatialDatabase").remove
+        SteersimConfig.at("scenarioAI").content = "sfAI"
+      end
+    end
+
+    module_function :change_scene, :set_ai
   end
 end
