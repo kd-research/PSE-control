@@ -10,17 +10,29 @@ $amount = $amount&.to_i || 16000
 $try_amount = $try_amount&.to_i || 100
 
 ParameterDatabase.establish_connection(target: :tmp)
+ParameterDatabase.initialize_database(force: true)
+SteerSuite.set_info('scene_evac_3', subdir: 'identity-record')
 
-def get_binary_filenames(dirname)
-  Dir.glob(File.join(dirname, "*.bin"))
+scenes = [3, 4, 5, 6, 7].map { |i| "scene_evac_#{i}" }
+type = %w[identity-record ordered-3738-record mixed-3738-record fullrandom-record]
+
+def get_parameter_generator(t, pa: 5)
+  arand = proc { Array.new(pa) { rand } }
+  type_block = {
+    'identity-record' => ->() { [rand] + arand[] * 75 },
+    'ordered-3738-record' => ->() { [rand] + arand[] * 37 + arand[] * 38 },
+    'mixed-3738-record' => ->() { [rand] + arand[].chain(arand[]).cycle.take(75 * pa)  },
+    'fullrandom-record' => ->() { [rand] + Array.new(75 * pa) { rand } }
+  }
+  type_block[t]
 end
 
-$scene.split(',').each do |scene|
+def feed_scene(scene, subdir: nil)
   SteerSuite.reinitialize!
 
-  SteerSuite.set_info(scene)
+  SteerSuite.set_info(scene, subdir: subdir)
   steersuite_config = SteerSuite.get_config.dup
-  steersuite_config['steersuite_record_pool'] = File.join(SteerSuite.info.data_location[:base], 'identity-record')
+  steersuite_config['steersuite_record_pool'] = SteerSuite.info.data_location[:base]
   if $noprocess
     steersuite_config['steersuite_process_pool'] = steersuite_config['steersuite_record_pool']
   else
@@ -35,14 +47,9 @@ $scene.split(',').each do |scene|
 
   until Dir["#{steersuite_config['steersuite_process_pool']}/*.bin"].size > $amount
     ParameterDatabase.initialize_database(force: true)
-    def equal_rand(size: 25)
-      Array.new(5) { rand } * size
-    end
     $try_amount.times.tqdm.each do
       pobj = ParameterObject.new(split: :train, state: :raw, label: 'budget-ground')
-      pobj.safe_set_parameter(
-        [rand] + equal_rand(size:75)
-      )
+      pobj.safe_set_parameter( yield )
       pobj.save!
     end
 
@@ -50,4 +57,15 @@ $scene.split(',').each do |scene|
     SteerSuite.process_unprocessed unless $noprocess
   end
 
+  SteerSuite.validate_raw(remove: true)
+end
+
+type.each do |t|
+  type_block = get_parameter_generator(t, pa: 5)
+  feed_scene('scene_evac_1', subdir: t, &type_block)
+
+  scenes.each do |scene|
+    type_block = get_parameter_generator(t, pa: 1)
+    feed_scene(scene, subdir: t, &type_block)
+  end
 end
