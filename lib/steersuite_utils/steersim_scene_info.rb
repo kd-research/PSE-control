@@ -8,6 +8,10 @@ module SteerSuite
       @scene_config = CONFIG.dig('steersuite_scene', 'basic', @scene)
     end
 
+    def agent_former_config
+      @scene_config
+    end
+
     def parameter_size
       @scene_config['parameter_size'].to_i
     end

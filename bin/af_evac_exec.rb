@@ -27,7 +27,7 @@ renderer.instance_variable_set :@num_epochs, 10
 renderer.instance_variable_set :@extra, "agent_num: #{$agent_num}\n"
 renderer.set_data_source(train_files, valid_files, [])
 
-#AgentFormer.call_agentformer
+AgentFormer.call_agentformer
 AgentFormer.call_latent_dump
 abort
 ActiveLearningCaller.keras_train(segmented: true)

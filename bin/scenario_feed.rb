@@ -11,7 +11,7 @@ $try_amount = $try_amount&.to_i || 100
 
 ParameterDatabase.establish_connection(target: :tmp)
 ParameterDatabase.initialize_database(force: true)
-SteerSuite.set_info('scene_evac_3', subdir: 'identity-record')
+SteerSuite.set_info('scene_evac_orca_1', subdir: 'identity-record')
 
 scenes = [3, 4, 5, 6, 7].map { |i| "scene_evac_#{i}" }
 type = %w[identity-record ordered-3738-record mixed-3738-record fullrandom-record]
@@ -60,12 +60,7 @@ def feed_scene(scene, subdir: nil)
   SteerSuite.validate_raw(remove: true)
 end
 
-type.each do |t|
-  type_block = get_parameter_generator(t, pa: 5)
-  feed_scene('scene_evac_1', subdir: t, &type_block)
 
-  scenes.each do |scene|
-    type_block = get_parameter_generator(t, pa: 1)
-    feed_scene(scene, subdir: t, &type_block)
-  end
+feed_scene('scene_evac_orca_1') do
+  [rand]
 end

@@ -61,7 +61,7 @@ describe SteerSuite::SteerSuiteWorkerHelper do
   end
 
   it "should work with evac scenario" do
-    SteerSuite.set_info("scene_evac_1")
+    SteerSuite.set_info("scene_evac_orca")
 
     10.times do
       p = ParameterObject.new(label: 'budget-ground', split: :train, state: :raw, file: nil)
@@ -77,8 +77,8 @@ describe SteerSuite::SteerSuiteWorkerHelper do
 
   end
 
-  it "should work with evac scenario 2" do
-    SteerSuite.set_info("scene_evac_2")
+  it "should work with evac scenario sf" do
+    SteerSuite.set_info("scene_evac_sf")
 
     10.times do
       p = ParameterObject.new(label: 'budget-ground', split: :train, state: :raw, file: nil)

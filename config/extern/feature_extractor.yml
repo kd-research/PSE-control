@@ -7,3 +7,4 @@ traj_scale                   : 2
 motion_dim                   : 2
 forecast_dim                 : 2
 play_speed                   : 1
+

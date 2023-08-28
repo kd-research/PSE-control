@@ -55,6 +55,12 @@ module AgentFormer
       !!@data_source
     end
 
+    def agent_former_extra
+      SteerSuite.info.agent_former_config.to_yaml(UseHeader: false)
+    rescue /No scene info set/
+      ''
+    end
+
     def include_data_source
       @data_source.to_yaml.delete_prefix("---\n")
     end
