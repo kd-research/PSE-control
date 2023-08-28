@@ -67,6 +67,8 @@ steersuite_scene:
       scene_name: sceneEvacORCA
       parameter_size: 376
       nagent: 75
+      env_parameter_size: 1
+      agent_parameter_size: 5
     scene_evac_orca_1:
       scene_name: sceneEvacOrca1
       parameter_size: 1
@@ -77,26 +79,38 @@ steersuite_scene:
       scene_name: sceneEvacOrca2
       parameter_size: 75
       nagent: 75
+      env_parameter_size: 0
+      agent_parameter_size: 1
     scene_evac_orca_3:
       scene_name: sceneEvacOrca3
       parameter_size: 75
       nagent: 75
+      env_parameter_size: 0
+      agent_parameter_size: 1
     scene_evac_orca_4:
       scene_name: sceneEvacOrca4
       parameter_size: 75
       nagent: 75
+      env_parameter_size: 0
+      agent_parameter_size: 1
     scene_evac_orca_5:
       scene_name: sceneEvacOrca5
       parameter_size: 75
       nagent: 75
+      env_parameter_size: 0
+      agent_parameter_size: 1
     scene_evac_orca_6:
       scene_name: sceneEvacOrca6
       parameter_size: 75
       nagent: 75
+      env_parameter_size: 0
+      agent_parameter_size: 1
 
     scene_evac_sf:
       scene_name: sceneEvacSF
       parameter_size: 976
       nagent: 75
       ai: social-force
+      env_parameter_size: 1
+      agent_parameter_size: 13
 
