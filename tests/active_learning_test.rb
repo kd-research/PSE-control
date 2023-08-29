@@ -3,6 +3,7 @@
 require_relative 'test_helper'
 class ActiveLearningTest < Minitest::Test
   def setup
+    $agentformer_preserve = true
     Snapshot.set_snapshot_base(Dir.tmpdir)
     AgentFormer.reinitialize!
     ActiveLearningCaller.reinitialize!

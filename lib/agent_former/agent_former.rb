@@ -12,7 +12,7 @@ module AgentFormer
 
   def self.temp_af_config(preserve: false)
     af_config_path = File.expand_path('cfg/tmp', PROJECT_BASE)
-    if preserve
+    if preserve || $agentformer_preserve
       Tempfile.create(%w[auto-generated- .yml], tmpdir = af_config_path)
     else
       Tempfile.new(%w[auto-generated- .yml], tmpdir = af_config_path)

@@ -56,7 +56,7 @@ module AgentFormer
     end
 
     def agent_former_extra
-      SteerSuite.info.agent_former_config.to_yaml(UseHeader: false)
+      SteerSuite.info.agent_former_config.to_yaml.delete_prefix("---\n")
     rescue /No scene info set/
       ''
     end

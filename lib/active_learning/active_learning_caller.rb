@@ -67,22 +67,13 @@ module ActiveLearningCaller
 
   def self.fill_keras_cfg(ext_configs = {})
     # now Agentformer handles configuration
-    nil
-#   configs = {
-#     parameter_size: 31, #SteerSuite.info.parameter_size,
-#     nagent: 10, # SteerSuite.info.nagent,
-#     nframe: AgentFormer.renderer_instance['past_frames'],
-#     nhead: AgentFormer.renderer_instance['sample_k'],
-#   }
-#   configs[:nelem] = %i[nagent nframe nhead].map { |key| configs[key] }.reduce(:*)
-#   # puts ext_configs into config
-#   configs.merge!(ext_configs)
-#   configs.stringify_keys!
-#   ftarget = File.join(working_dir, 'model.yml')
-#   File.write(ftarget, YAML.dump(configs))
+    ftarget = File.join(working_dir, 'model.yml')
+    configs = YAML.safe_load(File.read(ftarget))
+    # puts ext_configs into config
+    configs.merge!(ext_configs)
+    configs.stringify_keys!
+    File.write(ftarget, YAML.dump(configs))
   end
-
-  deprecate :fill_keras_cfg
 
   ##
   # Train the model
