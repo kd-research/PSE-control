@@ -32,7 +32,9 @@ module ParameterDatabase
 
   def load_from_directory(dirname, **kwargs)
     valid_method = kwargs.delete(:valid_method)
+    abort "No such directory: #{dirname}" unless Dir.exist? dirname
     files = Dir.glob(File.join(dirname, '*.bin'))
+    abort "No files found in #{dirname}" if files.empty?
     files = files.tqdm if $stdout.isatty
 
     files.each do |fname|
