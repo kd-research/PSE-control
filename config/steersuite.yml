@@ -29,6 +29,21 @@ scene_defs:
   - scene_evac_orca_5
   - scene_evac_orca_6
   - scene_evac_sf
+  - scene_evac_sf_0
+  - scene_evac_sf_1
+  - scene_evac_sf_2
+  - scene_evac_sf_3
+  - scene_evac_sf_4
+  - scene_evac_sf_5
+  - scene_evac_sf_6
+  - scene_evac_sf_7
+  - scene_evac_sf_8
+  - scene_evac_sf_9
+  - scene_evac_sf_10
+  - scene_evac_sf_11
+  - scene_evac_sf_12
+  - scene_evac_sf_13
+  - scene_evac_sf_14
 
 steersuite_scene:
   basic:
@@ -113,4 +128,102 @@ steersuite_scene:
       ai: social-force
       env_parameter_size: 1
       agent_parameter_size: 13
+    scene_evac_sf_1:
+      scene_name: sceneEvacSF1
+      parameter_size: 1
+      nagent: 75
+      ai: social-force
+      env_parameter_size: 1
+      agent_parameter_size: 0
+    scene_evac_sf_2:
+      scene_name: sceneEvacSF2
+      parameter_size: 75
+      nagent: 75
+      ai: social-force
+      env_parameter_size: 0
+      agent_parameter_size: 1
+    scene_evac_sf_3:
+      scene_name: sceneEvacSF3
+      parameter_size: 75
+      nagent: 75
+      ai: social-force
+      env_parameter_size: 0
+      agent_parameter_size: 1
+    scene_evac_sf_4:
+      scene_name: sceneEvacSF4
+      parameter_size: 75
+      nagent: 75
+      ai: social-force
+      env_parameter_size: 0
+      agent_parameter_size: 1
+    scene_evac_sf_5:
+      scene_name: sceneEvacSF5
+      parameter_size: 75
+      nagent: 75
+      ai: social-force
+      env_parameter_size: 0
+      agent_parameter_size: 1
+    scene_evac_sf_6:
+      scene_name: sceneEvacSF6
+      parameter_size: 75
+      nagent: 75
+      ai: social-force
+      env_parameter_size: 0
+      agent_parameter_size: 1
+    scene_evac_sf_7:
+      scene_name: sceneEvacSF7
+      parameter_size: 75
+      nagent: 75
+      ai: social-force
+      env_parameter_size: 0
+      agent_parameter_size: 1
+    scene_evac_sf_8:
+      scene_name: sceneEvacSF8
+      parameter_size: 75
+      nagent: 75
+      ai: social-force
+      env_parameter_size: 0
+      agent_parameter_size: 1
+    scene_evac_sf_9:
+      scene_name: sceneEvacSF9
+      parameter_size: 75
+      nagent: 75
+      ai: social-force
+      env_parameter_size: 0
+      agent_parameter_size: 1
+    scene_evac_sf_10:
+      scene_name: sceneEvacSF10
+      parameter_size: 75
+      nagent: 75
+      ai: social-force
+      env_parameter_size: 0
+      agent_parameter_size: 1
+    scene_evac_sf_11:
+      scene_name: sceneEvacSF11
+      parameter_size: 75
+      nagent: 75
+      ai: social-force
+      env_parameter_size: 0
+      agent_parameter_size: 1
+    scene_evac_sf_12:
+      scene_name: sceneEvacSF12
+      parameter_size: 75
+      nagent: 75
+      ai: social-force
+      env_parameter_size: 0
+      agent_parameter_size: 1
+    scene_evac_sf_13:
+      scene_name: sceneEvacSF13
+      parameter_size: 75
+      nagent: 75
+      ai: social-force
+      env_parameter_size: 0
+      agent_parameter_size: 1
+    scene_evac_sf_14:
+      scene_name: sceneEvacSF14
+      parameter_size: 75
+      nagent: 75
+      ai: social-force
+      env_parameter_size: 0
+      agent_parameter_size: 1
 
