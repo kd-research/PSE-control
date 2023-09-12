@@ -3,8 +3,8 @@
 module TestAsset
   ##
   # Will read asset file relative to tests folder
-  def self.load(path, opt={})
-    opt_with_default = {mode: 'rb'}.merge(opt)
+  def self.load(path, opt = {})
+    opt_with_default = {mode: "rb"}.merge(opt)
     target = get_path(path)
     File.read(target, opt: opt_with_default)
   end

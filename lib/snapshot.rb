@@ -1,15 +1,16 @@
 # frozen_string_literal: true
-require 'tmpdir'
-require 'tempfile'
-require 'fileutils'
-require 'securerandom'
-require_relative 'storage_loader'
+
+require "tmpdir"
+require "tempfile"
+require "fileutils"
+require "securerandom"
+require_relative "storage_loader"
 
 module Snapshot
-
   module_function
+
   def reinitialize!
-    set_snapshot_base(File.join(StorageLoader.storage_base, 'snapshots'))
+    set_snapshot_base(File.join(StorageLoader.storage_base, "snapshots"))
   end
 
   def set_snapshot_base(path)
@@ -28,9 +29,9 @@ module Snapshot
     target
   end
 
-  def make_temp_file_in_snapshot(content, prefix: 'activeloop-tmpfile', suffix: nil)
-    FileUtils.mkdir_p(File.join(SNAPSHOT_PATH, 'tmp'))
-    file = Tempfile.new([prefix, suffix], File.join(SNAPSHOT_PATH, 'tmp'))
+  def make_temp_file_in_snapshot(content, prefix: "activeloop-tmpfile", suffix: nil)
+    FileUtils.mkdir_p(File.join(SNAPSHOT_PATH, "tmp"))
+    file = Tempfile.new([prefix, suffix], File.join(SNAPSHOT_PATH, "tmp"))
     file.write(content)
     file.close
     file.path

@@ -9,5 +9,9 @@
         </list>
       </option>
     </inspection_tool>
+    <inspection_tool class="Rubocop" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="myUseStandardGemIfPossible" value="true" />
+      <option name="myRunRubocopOnSave" value="true" />
+    </inspection_tool>
   </profile>
 </component>

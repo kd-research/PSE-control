@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-require 'English'
-require 'csv'
-require 'open3'
-require 'shellwords'
-require 'active_support/core_ext/hash/keys'
-require_relative '../snapshot'
-require_relative '../config_loader'
-require_relative '../agent_former'
-require_relative '../parameter_object'
+require "English"
+require "csv"
+require "open3"
+require "shellwords"
+require "active_support/core_ext/hash/keys"
+require_relative "../snapshot"
+require_relative "../config_loader"
+require_relative "../agent_former"
+require_relative "../parameter_object"
 
 ##
 # step 1:
@@ -22,13 +22,13 @@ module ActiveLearningCaller
   extend ConfigLoader
 
   def self.reinitialize!
-    remove_const :CONFIG if self.const_defined? :CONFIG
-    remove_const :AF_CONFIG if self.const_defined? :AF_CONFIG
-    remove_const :PROJECT_BASE if self.const_defined? :PROJECT_BASE
+    remove_const :CONFIG if const_defined? :CONFIG
+    remove_const :AF_CONFIG if const_defined? :AF_CONFIG
+    remove_const :PROJECT_BASE if const_defined? :PROJECT_BASE
 
-    const_set :CONFIG, load_config('config/active_learning.yml')
-    const_set :AF_CONFIG, load_config('config/agentformer.yml')
-    const_set :PROJECT_BASE, Snapshot.make_snapshot(CONFIG['active_learning_keras_base'])
+    const_set :CONFIG, load_config("config/active_learning.yml")
+    const_set :AF_CONFIG, load_config("config/agentformer.yml")
+    const_set :PROJECT_BASE, Snapshot.make_snapshot(CONFIG["active_learning_keras_base"])
 
     private_constant :CONFIG, :AF_CONFIG, :PROJECT_BASE
   end
@@ -41,7 +41,7 @@ module ActiveLearningCaller
   # best_valid checkpoint file
   def self.keras_exec(cmd, capture: false)
     env_patch = {
-      'PYTHON_PATH' => "#{ENV['PYTHON_PATH']}:#{PROJECT_BASE}"
+      "PYTHON_PATH" => "#{ENV["PYTHON_PATH"]}:#{PROJECT_BASE}"
     }
     if capture
       out, = Open3.capture2(env_patch, cmd, chdir: PROJECT_BASE)
@@ -54,21 +54,21 @@ module ActiveLearningCaller
   end
 
   def self.working_dir
-    if CONFIG['with_agentformer']
-      agentformer_result_dir = AgentFormer.const_get(:CONFIG)['result_dir']
+    if CONFIG["with_agentformer"]
+      agentformer_result_dir = AgentFormer.const_get(:CONFIG)["result_dir"]
       agentformer_base_dir = Snapshot.make_snapshot(agentformer_result_dir, copy: false)
-      agentformer_model_yaml = AgentFormer.renderer_instance.render('agentformer')
-      agentformer_model_dir = YAML.safe_load(agentformer_model_yaml)['as']
-      File.join(agentformer_base_dir, agentformer_model_dir, 'latents')
+      agentformer_model_yaml = AgentFormer.renderer_instance.render("agentformer")
+      agentformer_model_dir = YAML.safe_load(agentformer_model_yaml)["as"]
+      File.join(agentformer_base_dir, agentformer_model_dir, "latents")
     else
-      StorageLoader.get_absolute_path CONFIG['working_directory']
+      StorageLoader.get_absolute_path CONFIG["working_directory"]
     end
   end
 
   def self.fill_keras_cfg(ext_configs = {})
     # now Agentformer handles configuration
-    ftarget = File.join(working_dir, 'model.yml')
-    configs = YAML.safe_load(File.read(ftarget))
+    ftarget = File.join(working_dir, "model.yml")
+    configs = YAML.safe_load_file(ftarget)
     # puts ext_configs into config
     configs.merge!(ext_configs)
     configs.stringify_keys!
@@ -84,8 +84,8 @@ module ActiveLearningCaller
   def self.keras_train(...)
     fill_keras_cfg(...)
 
-    cmd = CONFIG['python_path'].shellsplit
-    cmd << 'keras_train.py'
+    cmd = CONFIG["python_path"].shellsplit
+    cmd << "keras_train.py"
     cmd << working_dir
 
     keras_exec cmd.shelljoin
@@ -103,15 +103,15 @@ module ActiveLearningCaller
     with_label = options.delete(:with_label)
     dummy = options.delete(:dummy) || false
     noparse = options.delete(:noparse) || false
-    sample_amount = options.delete(:count) || CONFIG['sample_amount']['train']
+    sample_amount = options.delete(:count) || CONFIG["sample_amount"]["train"]
 
     fill_keras_cfg(options)
 
-    cmd = CONFIG['python_path'].shellsplit
-    cmd << 'keras_sampl.py'
+    cmd = CONFIG["python_path"].shellsplit
+    cmd << "keras_sampl.py"
     cmd << working_dir
-    cmd << '-c' << sample_amount
-    cmd << '--parsable'
+    cmd << "-c" << sample_amount
+    cmd << "--parsable"
 
     samples = keras_exec(cmd.shelljoin, capture: true)
     return samples if noparse

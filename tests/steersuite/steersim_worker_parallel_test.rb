@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'active_record'
+require "active_record"
 require_relative "../test_helper"
 
 ActiveRecord::Base.establish_connection(adapter: "sqlite3", database: "#{Dir.mktmpdir}/test.sqlite3")
@@ -12,17 +12,16 @@ describe SteerSuite::SteerSuiteWorkerHelper do
     ParameterDatabase.initialize_database(force: true)
   end
 
-  it 'should work in parallel' do
-    simulate_sample_1 = TestAsset.get_path('steersim_binary/sample1.bin')
+  it "should work in parallel" do
+    simulate_sample_1 = TestAsset.get_path("steersim_binary/sample1.bin")
     SteerSuite.stub(:simulate,
-                    lambda do |_pobj, **_opts|
-                      sleep(rand(0.1))
-                      { filename: simulate_sample_1, benchmark_log: Random.alphanumeric(100) }
-                    end
-    ) do
-      SteerSuite.set_info('scene1')
+      lambda do |_pobj, **_opts|
+        sleep(rand(0.1))
+        {filename: simulate_sample_1, benchmark_log: Random.alphanumeric(100)}
+      end) do
+      SteerSuite.set_info("scene1")
       100.times do
-        p = ParameterObject.new(label: 'budget-ground', split: :train, state: :raw, file: nil)
+        p = ParameterObject.new(label: "budget-ground", split: :train, state: :raw, file: nil)
         p.safe_set_parameter(9.times.map { rand })
         p.save!
       end
@@ -41,10 +40,10 @@ describe SteerSuite::SteerSuiteWorkerHelper do
     it "should work with #{scene}" do
       SteerSuite.set_info(scene)
 
-      refute SteerSuite.unprocessed.any?, 'There should be no unprocessed parameter objects'
+      refute SteerSuite.unprocessed.any?, "There should be no unprocessed parameter objects"
 
       10.times do
-        p = ParameterObject.new(label: 'budget-ground', split: :train, state: :raw, file: nil)
+        p = ParameterObject.new(label: "budget-ground", split: :train, state: :raw, file: nil)
         p.safe_set_parameter(SteerSuite.info.parameter_size.times.map { rand })
         p.save!
       end
@@ -64,7 +63,7 @@ describe SteerSuite::SteerSuiteWorkerHelper do
     SteerSuite.set_info("scene_evac_orca")
 
     10.times do
-      p = ParameterObject.new(label: 'budget-ground', split: :train, state: :raw, file: nil)
+      p = ParameterObject.new(label: "budget-ground", split: :train, state: :raw, file: nil)
       p.safe_set_parameter(SteerSuite.info.parameter_size.times.map { rand })
       p.save!
     end
@@ -74,14 +73,13 @@ describe SteerSuite::SteerSuiteWorkerHelper do
     assert_equal(0, ParameterObject.with_no_simulation.count)
     assert BenchmarkLogs.any?
     assert SteerSuite.unprocessed.any?
-
   end
 
   it "should work with evac scenario sf" do
     SteerSuite.set_info("scene_evac_sf")
 
     10.times do
-      p = ParameterObject.new(label: 'budget-ground', split: :train, state: :raw, file: nil)
+      p = ParameterObject.new(label: "budget-ground", split: :train, state: :raw, file: nil)
       p.safe_set_parameter(SteerSuite.info.parameter_size.times.map { rand })
       p.save!
     end
@@ -91,15 +89,14 @@ describe SteerSuite::SteerSuiteWorkerHelper do
     assert_equal(0, ParameterObject.with_no_simulation.count)
     assert BenchmarkLogs.any?
     assert SteerSuite.unprocessed.any?
-
   end
 
-  scene_not_exist = "sceneBasic#{CURRENT_STEERSUITE_SCENE_MAX+1}"
+  scene_not_exist = "sceneBasic#{CURRENT_STEERSUITE_SCENE_MAX + 1}"
   it "won't work with #{scene_not_exist}" do
     SteerSuite::SteersimConfigEditor.change_scene(scene_not_exist)
 
     10.times do
-      p = ParameterObject.new(label: 'budget-ground', split: :train, state: :raw, file: nil)
+      p = ParameterObject.new(label: "budget-ground", split: :train, state: :raw, file: nil)
       p.safe_set_parameter(9.times.map { rand })
       p.save!
     end

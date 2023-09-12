@@ -3,7 +3,7 @@
 ##
 # A global asset storage manager used to store/exchange files
 module StorageLoader
-  STORAGE_BASE = File.expand_path('../../storage', __FILE__).freeze
+  STORAGE_BASE = File.expand_path("../../storage", __FILE__).freeze
 
   def self.storage_base=(val)
     @storage_base_custom = val

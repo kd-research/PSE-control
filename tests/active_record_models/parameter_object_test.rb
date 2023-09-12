@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../test_helper'
+require_relative "../test_helper"
 
 ParameterDatabase.establish_connection(target: :test)
 class ParameterObjectTest < Minitest::Test
@@ -12,7 +12,7 @@ class ParameterObjectTest < Minitest::Test
     3.times do |i|
       parameter_length = rand(10..20)
       50.times do |i|
-        pobj = ParameterObject.new(label: 'budget-ground', split: :train, state: :raw, file: nil)
+        pobj = ParameterObject.new(label: "budget-ground", split: :train, state: :raw, file: nil)
         pobj.safe_set_parameter(parameter_length.times.map { rand })
         pobj.save!
       end

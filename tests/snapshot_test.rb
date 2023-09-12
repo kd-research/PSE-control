@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
-require_relative "./test_helper"
+require_relative "test_helper"
 class SnapshotTest < Minitest::Test
   def setup
     Snapshot.reinitialize!
   end
+
   # test snapshot dir is empty after initialization
   def test_snapshot_dir_is_empty
     assert Dir.exist?(Snapshot::SNAPSHOT_PATH)
@@ -26,5 +27,4 @@ class SnapshotTest < Minitest::Test
 
     refute Dir.exist?(old_snapshot)
   end
-
 end

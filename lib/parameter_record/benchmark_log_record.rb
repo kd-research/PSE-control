@@ -10,6 +10,7 @@ module BenchmarkLogActions # :nodoc:
       RUBY
     end
   end
+
   def initialize_database(force: false)
     connection.create_table :benchmark_log, force: force do |t|
       t.belongs_to :parameter_object
@@ -23,11 +24,11 @@ end
 # from steersuite
 class BenchmarkLogs < ActiveRecord::Base
   ALL_BENCHES = %i[total_acceleration total_distance_traveled
-                   total_change_in_speed total_degrees_turned
-                   ple_energy ple_energy_optimal ple_energy_ratio].freeze
+    total_change_in_speed total_degrees_turned
+    ple_energy ple_energy_optimal ple_energy_ratio].freeze
   extend BenchmarkLogActions
 
-  self.table_name = 'benchmark_log'
+  self.table_name = "benchmark_log"
   belongs_to :parameter_object
 
   def benchattr

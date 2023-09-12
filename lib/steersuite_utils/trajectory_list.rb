@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'data_struct'
+require_relative "data_struct"
 
 module SteerSuite
   module Data
@@ -23,7 +23,7 @@ module SteerSuite
       end
 
       # Block return new element sit on each frame
-      def map_speed(speed_proc=:set_info)
+      def map_speed(speed_proc = :set_info)
         return to_enum(:each_speed, speed_proc) unless block_given?
 
         unless speed_proc.respond_to? :call

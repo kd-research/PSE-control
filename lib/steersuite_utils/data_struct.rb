@@ -1,5 +1,6 @@
 # frozen_string_literal: true
-require 'forwardable'
+
+require "forwardable"
 
 module SteerSuite
   module Data
@@ -10,10 +11,10 @@ module SteerSuite
 
       def initialize(elements = nil)
         @elements = if block_given?
-                      yield
-                    else
-                      elements
-                    end
+          yield
+        else
+          elements
+        end
       end
     end
   end

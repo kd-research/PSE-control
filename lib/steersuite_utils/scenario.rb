@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'forwardable'
-require_relative '../steer_suite'
-require_relative 'data_struct'
-require_relative 'steersim_worker'
+require "forwardable"
+require_relative "../steer_suite"
+require_relative "data_struct"
+require_relative "steersim_worker"
 
 module SteerSuite
   module Data
@@ -27,7 +27,7 @@ module SteerSuite
     end
 
     def map_trajectory(&block)
-      return enum_for(:map_trajectory) unless block_given?
+      return enum_for(:map_trajectory) unless block
 
       new_agent_data = agent_data.map(&block)
       return nil unless new_agent_data.all?

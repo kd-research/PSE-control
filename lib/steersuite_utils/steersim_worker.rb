@@ -1,18 +1,19 @@
 # frozen_string_literal: true
 
-require 'yaml'
-require 'open3'
-require 'expect'
-require 'fileutils'
-require 'parallel'
+require "yaml"
+require "open3"
+require "expect"
+require "fileutils"
+require "parallel"
 
-require_relative '../storage_loader'
-require_relative '../parameter_object'
-require_relative '../steer_suite'
+require_relative "../storage_loader"
+require_relative "../parameter_object"
+require_relative "../steer_suite"
 
 module SteerSuite
   module SteerSuiteWorkerHelper
     class BadSimulationError < StandardError; end
+
     ##
     # Simulate a record with no simulation attached
     # return a new record with simulation performed
@@ -27,7 +28,7 @@ module SteerSuite
       benchmark_log = r.read
       r.close
 
-      { filename: simulated, benchmark_log: benchmark_log }
+      {filename: simulated, benchmark_log: benchmark_log}
     end
 
     # Take steersim processing a string document and return
@@ -37,20 +38,19 @@ module SteerSuite
     # @param [IO] benchmark_pipe
     # @param [Hash, nil] dry_hash
     def exec_simulate(doc, dry_run: false, benchmark_pipe: nil, dry_hash: nil)
-      steersim_record_path = StorageLoader.get_absolute_path(CONFIG['steersuite_record_pool'])
-      ld_library_path_arr = ENV['LD_LIBRARY_PATH']&.split(':') || []
-      ld_library_path_arr << File.join(CONFIG['steersuite_exec_base'], '..', 'lib')
-      ld_library_path_arr << File.join(CONFIG['steersuite_exec_base'], 'lib')
-      ld_library_path = ld_library_path_arr.join(':')
+      steersim_record_path = StorageLoader.get_absolute_path(CONFIG["steersuite_record_pool"])
+      ld_library_path_arr = ENV["LD_LIBRARY_PATH"]&.split(":") || []
+      ld_library_path_arr << File.join(CONFIG["steersuite_exec_base"], "..", "lib")
+      ld_library_path_arr << File.join(CONFIG["steersuite_exec_base"], "lib")
+      ld_library_path = ld_library_path_arr.join(":")
       env_patch = {
-        'SteersimRecordPath' => steersim_record_path,
-        'LD_LIBRARY_PATH' => ld_library_path
+        "SteersimRecordPath" => steersim_record_path,
+        "LD_LIBRARY_PATH" => ld_library_path
       }
       config_path = Snapshot.make_temp_file_in_snapshot(SteersimConfig.to_xml,
-                                                        prefix: 'steersuite-config-', suffix: '.xml')
-      command = CONFIG['steersuite_exec_cmd'] + " -config #{config_path}"
-      workdir = CONFIG['steersuite_exec_base']
-
+        prefix: "steersuite-config-", suffix: ".xml")
+      command = CONFIG["steersuite_exec_cmd"] + " -config #{config_path}"
+      workdir = CONFIG["steersuite_exec_base"]
 
       if $DEBUG
         puts "Steersuite record path: #{steersim_record_path}"
@@ -63,7 +63,7 @@ module SteerSuite
 
       if dry_run
         dry_hash&.update(
-          { input: doc, env_patch: env_patch, command: command, chdir: workdir, config: SteersimConfig.to_xml })
+          {input: doc, env_patch: env_patch, command: command, chdir: workdir, config: SteersimConfig.to_xml})
         return nil
       end
 
@@ -71,15 +71,14 @@ module SteerSuite
       retry_max = 10
 
       begin
-
         simulated = nil
-        options = { chdir: workdir }
+        options = {chdir: workdir}
         options[5] = benchmark_pipe if benchmark_pipe
         Open3.popen2e(env_patch, command, **options) do |i, o, w|
           i.puts(doc)
           buffer = o.readlines
           if $DEBUG
-            puts '=================='
+            puts "=================="
             puts buffer
           end
 
@@ -92,7 +91,6 @@ module SteerSuite
             puts(buffer.last(3).map { |l| "[#{doc.first(10)}]: #{l.chomp}" })
           end
         end
-
       rescue BadSimulationError
         retry_count += 1
         if retry_count <= retry_max
@@ -103,7 +101,7 @@ module SteerSuite
         else
           puts %(Bad simulation result for "#{doc.first(10)}...", simulation failed.)
         end
-      ensure 
+      ensure
         benchmark_pipe&.close
       end
 
@@ -111,24 +109,24 @@ module SteerSuite
     end
 
     def simulate_unsimulated
-      FileUtils.mkdir_p(StorageLoader.get_path(CONFIG['steersuite_record_pool']))
+      FileUtils.mkdir_p(StorageLoader.get_path(CONFIG["steersuite_record_pool"]))
       unsimulated = ParameterObject.with_no_simulation
       puts "Going to simulate #{unsimulated.size} scenarios"
       if $stdin.isatty
         Parallel.each(unsimulated,
-                      in_threads: `nproc`.to_i,
-                      progress: 'Simulating',
-                      finish: lambda { |pobj, _, result|
-                        SteerSuite.document(pobj, **result)
-                      }) do |pobj|
+          in_threads: `nproc`.to_i,
+          progress: "Simulating",
+          finish: lambda { |pobj, _, result|
+            SteerSuite.document(pobj, **result)
+          }) do |pobj|
           SteerSuite.simulate(pobj)
         end
       else
         Parallel.each(unsimulated,
-                      in_threads: `nproc`.to_i,
-                      finish: lambda { |pobj, _, result|
-                                 SteerSuite.document(pobj, **result)
-                               }) do |pobj|
+          in_threads: `nproc`.to_i,
+          finish: lambda { |pobj, _, result|
+                    SteerSuite.document(pobj, **result)
+                  }) do |pobj|
           SteerSuite.simulate(pobj)
         end
       end
