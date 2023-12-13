@@ -107,18 +107,18 @@ def compute_mae(from, to)
   end
 end
 
-context = ExperimentContext.new(StorageLoader::STORAGE_BASE, :cross_valid, '.', nil, nil)
+$context = ExperimentContext.new(StorageLoader::STORAGE_BASE, :cross_valid, '.', nil, nil)
 stages = %w[]
 
 OptionParser.new do |opts|
   opts.banner = "Usage: #{__FILE__} [options] <Latent directory>"
 
   opts.on('-t', '--scene-type=Type', 'type of simulation scene') do |v|
-    context.scene_name = v
+    $context.scene_name = v
   end
 
   opts.on('-s', '--subscene-type=Type', 'type of subscene') do |v|
-    context.sub_scene_name = v
+    $context.sub_scene_name = v
   end
 
   opts.on('-j', '--scene-job-name=Type', 'scene identifier by job name') do |v|
@@ -127,8 +127,8 @@ OptionParser.new do |opts|
     # subscene name: identity-rep0
 
     scene_name, sub_scene_name = v.split('-', 2)
-    context.scene_name = "scene_evac_#{scene_name}"
-    context.sub_scene_name = sub_scene_name.gsub('record-evac10-', '')
+    $context.scene_name = "scene_evac_#{scene_name}"
+    $context.sub_scene_name = sub_scene_name.gsub('record-evac10-', '')
   end
 
   opts.on('-A', '--ablation', 'Ablation examination') do
@@ -176,7 +176,7 @@ def stage2
                          File.join($latent_location, 'predict.json')
                        end
   pred_data = read_json_file(File.open(pred_json_location))
-  loads_prediction_data_pair(pred_data, context)
+  loads_prediction_data_pair(pred_data, $context)
 end
 
 def stage3
@@ -191,7 +191,7 @@ def stage3
   puts mae_list.descriptive_statistics.stringify_keys.to_yaml
 end
 
-stages ||= %i[stage1 stage2 stage3]
+stages = %i[stage1 stage2 stage3] if stages.empty?
 stages.each do |stage|
   send(stage)
 end
