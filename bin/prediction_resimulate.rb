@@ -16,14 +16,12 @@ require 'steer_suite'
 require 'storage_loader'
 require 'yaml'
 
+
 ExperimentContext = Struct.new(:gounds_location, 
                                :ground_type,
                                :predict_location,
                                :scene_name,
                                :sub_scene_name)
-
-ParameterDatabase.establish_connection
-ParameterDatabase.initialize_database(force: true)
 
 def make_json_prediction
   config = ActiveLearningCaller.const_get(:CONFIG)
@@ -95,7 +93,22 @@ def loads_prediction_data_pair(data, context)
   SteerSuite.simulate_unsimulated
 end
 
+def compute_mae(from, to)
+  config = AgentFormer.const_get(:CONFIG)
+  singularity_container = config['singularity_container']
+  command_base = config['agent_former_base']
+  command_script = "./bin/compute_mae.py"
+  singularity_command = "singularity exec --nv #{singularity_container} python3 #{command_script}"
+
+  Dir.chdir(command_base) do
+    command = "#{singularity_command} #{from} #{to}"
+    result = `#{command}`
+    result[/MAE:\s+(\d+\.\d+)/, 1].to_f
+  end
+end
+
 context = ExperimentContext.new(StorageLoader::STORAGE_BASE, :cross_valid, '.', nil, nil)
+stages = %w[]
 
 OptionParser.new do |opts|
   opts.banner = "Usage: #{__FILE__} [options] <Latent directory>"
@@ -122,6 +135,18 @@ OptionParser.new do |opts|
     $ablation = true
   end
 
+  opts.on('--stage1', 'prediction environment from ') do
+    stages << :stage1
+  end
+
+  opts.on('--stage2', 'prediction environment from ') do
+    stages << :stage2
+  end
+
+  opts.on('--stage3', 'prediction environment from ') do
+    stages << :stage3
+  end
+
   opts.on('-h', '--help', 'Prints this help') do
     puts opts
     exit
@@ -129,37 +154,44 @@ OptionParser.new do |opts|
 end.parse!
 
 $latent_location = ARGV.shift
+raise 'Latent location not specified' unless $latent_location
 
-make_json_prediction
-pred_json_location = if $ablation
-                       File.join($latent_location, 'ablation.json')
-                     else
-                       File.join($latent_location, 'predict.json')
-                     end
-pred_data = read_json_file(File.open(pred_json_location))
-loads_prediction_data_pair(pred_data, context)
+database_path = if $ablation
+                  File.join($latent_location, 'ablation.db')
+                else
+                  File.join($latent_location, 'predict.db')
+                end
 
+ParameterDatabase.establish_connection(database: database_path, copy: false)
 
-def compute_mae(from, to)
-  config = AgentFormer.const_get(:CONFIG)
-  singularity_container = config['singularity_container']
-  command_base = config['agent_former_base']
-  command_script = "./bin/compute_mae.py"
-  singularity_command = "singularity exec --nv #{singularity_container} python3 #{command_script}"
+def stage1
+  ParameterDatabase.initialize_database(force: true)
+  make_json_prediction
+end
 
-  Dir.chdir(command_base) do
-    command = "#{singularity_command} #{from} #{to}"
-    result = `#{command}`
-    result[/MAE:\s+(\d+\.\d+)/, 1].to_f
+def stage2
+  pred_json_location = if $ablation
+                         File.join($latent_location, 'ablation.json')
+                       else
+                         File.join($latent_location, 'predict.json')
+                       end
+  pred_data = read_json_file(File.open(pred_json_location))
+  loads_prediction_data_pair(pred_data, context)
+end
+
+def stage3
+  mae_list = Parallel.map(ParameterObjectRelation.all, progress: "relation") do |relation|
+    from = relation.from.file
+    to = relation.to.file
+    raise "from file not found: #{from}" unless File.exist?(from)
+    raise "to file not found: #{to}" unless File.exist?(to)
+    mae = compute_mae(from, to)
   end
+
+  puts mae_list.descriptive_statistics.stringify_keys.to_yaml
 end
 
-mae_list = Parallel.map(ParameterObjectRelation.all, progress: "relation") do |relation|
-  from = relation.from.file
-  to = relation.to.file
-  raise "from file not found: #{from}" unless File.exist?(from)
-  raise "to file not found: #{to}" unless File.exist?(to)
-  mae = compute_mae(from, to)
+stages ||= %i[stage1 stage2 stage3]
+stages.each do |stage|
+  send(stage)
 end
-
-puts mae_list.descriptive_statistics.stringify_keys.to_yaml
