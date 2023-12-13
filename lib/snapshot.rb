@@ -11,6 +11,18 @@ module Snapshot
 
   def reinitialize!
     set_snapshot_base(File.join(StorageLoader.storage_base, "snapshots"))
+    @reusing_snapshot = false
+  end
+
+  def reuse_snapshot!(path)
+    if const_defined?(:SNAPSHOT_PATH)
+      Dir.rmdir(SNAPSHOT_PATH) if Dir.empty?(SNAPSHOT_PATH)
+      remove_const(:SNAPSHOT_PATH)
+    end
+
+    const_set(:SNAPSHOT_PATH, path)
+    puts "Reusing snapshot #{path}"
+    @reusing_snapshot = true
   end
 
   def set_snapshot_base(path)
@@ -19,7 +31,8 @@ module Snapshot
       remove_const(:SNAPSHOT_PATH)
     end
     FileUtils.mkdir_p(path)
-    pp snpath = Dir.mktmpdir(%w[activeloop- .snapshot], path)
+    snpath = Dir.mktmpdir(%w[activeloop- .snapshot], path)
+    puts "Initialized snapshot path: #{snpath}"
     const_set(:SNAPSHOT_PATH, snpath)
   end
 
@@ -40,7 +53,11 @@ module Snapshot
   def make_snapshot(path, copy: !$NOINIT)
     basename = File.basename(path)
     target = File.join(SNAPSHOT_PATH, basename)
-    FileUtils.cp_r(path, SNAPSHOT_PATH) if copy
+    if File.exist?(target) && !@reusing_snapshot
+      warn "Snapshot #{basename} already exists, not overwriting."
+    else
+      FileUtils.cp_r(path, SNAPSHOT_PATH) if copy
+    end
     target
   end
 

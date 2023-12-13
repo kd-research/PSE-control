@@ -3,8 +3,8 @@ userspec:
     steersuite_exec_base: "/home/hpc/hpcguest4/ActiveLoopProject/SteerSuite-P2/build/bin"
     steersuite_exec_cmd: "singularity exec --env LD_LIBRARY_PATH=$LD_LIBRARY_PATH --nv /home/hpc/hpcguest4/sifs/hlsix-220922.sif ./steersim -commandline"
   kaidong:
-    steersuite_exec_base: "/home/kaidong/SteerSuite-P2/build/bin"
-    steersuite_exec_cmd: "./steersim -commandline"
+    steersuite_exec_base: "/home/kaidong/Projects/CLionProjects/SteerSuite-P2/build/bin"
+    steersuite_exec_cmd: "singularity exec --env LD_LIBRARY_PATH=$LD_LIBRARY_PATH /home/kaidong/Projects/CLionProjects/SteerSuite-P2/steersim.sif ./steersim -commandline"
 
 steersuite_record_pool: "steersimRecord-generated"
 steersuite_process_pool: "steersimRecord-generated-process"

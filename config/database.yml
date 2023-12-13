@@ -7,7 +7,11 @@ userspec:
       timeout: 10000
 
   kaidong:
-    # nothing
+    default:
+      adapter: sqlite3
+      database: "storage/pobj.sqlite3"
+      pool: 50
+      timeout: 10000
 
 default: &DEFAULT
   adapter: postgresql

@@ -10,15 +10,22 @@ module ParameterDatabase
 
   module_function
 
-  def establish_connection(target: :default)
+  def establish_connection(target: :default, **kwargs)
     return if ActiveRecord::Base.connected?
 
     db_config = load_config("config/database.yml")
     db_config.symbolize_keys!
 
+    do_copy = kwargs.fetch(:copy, true)
     c = db_config[target]
-    c["database"] = Snapshot.make_snapshot(c["database"], copy: false) if c["adapter"] == "sqlite3"
+    c.update(kwargs.slice(:database, :username, :password, :host, :port))
+    if c["adapter"] == "sqlite3" && !c["database"].start_with?(":memory:")
+      if do_copy
+        c["database"] = Snapshot.make_snapshot(c["database"], copy: File.exist?(c["database"]))
+      end
+    end
 
+    puts "Connecting to #{c.inspect}" if $DEBUG
     ActiveRecord::Base.establish_connection(c)
   end
 

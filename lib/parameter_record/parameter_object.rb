@@ -59,7 +59,8 @@ class ParameterObject < ActiveRecord::Base
 
   def safe_set_parameter(parameters, length: nil)
     raise "Not an array" unless parameters.is_a? Array
-    raise "Not an array of float" unless parameters.all? { |x| x.is_a? Float }
+    parameters = parameters.map(&:to_f)
+    raise "Not an array of float\n#{parameters.inspect}" unless parameters.all? { |x| x.is_a? Float }
     raise "Amount incorrect" unless length.nil? || parameters.length == length
 
     self.parameters = parameters
