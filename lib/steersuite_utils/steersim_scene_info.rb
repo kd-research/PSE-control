@@ -20,6 +20,11 @@ module SteerSuite
       @scene_config["nagent"].to_i
     end
 
+    # Return the data location for the scene
+    # Data location is determined by the scene name and the subdir
+    # return the data location for train, valid, train20, valid20, test and
+    # otherwise use :base to return the base data location
+    # @return [Hash(Symbol, String)] Data location for the scene
     def data_location
       base = StorageLoader.get_path("#{@scene.tr("_", "-")}-base-data")
       base = File.join(base, @subdir) if @subdir

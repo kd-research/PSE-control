@@ -14,12 +14,15 @@ module ParameterDatabase
     return if ActiveRecord::Base.connected?
 
     db_config = load_config("config/database.yml")
-    db_config.symbolize_keys!
+    # db_config.symbolize_keys!
 
     do_copy = kwargs.fetch(:copy, true)
-    c = db_config[target]
+    c = db_config[target.to_s]
+    raise "No such database: #{target}" if c.nil?
     c.update(kwargs.slice(:database, :username, :password, :host, :port))
+
     if c["adapter"] == "sqlite3" && !c["database"].start_with?(":memory:")
+      FileUtils.mkdir_p(File.expand_path(File.dirname(c["database"])))
       if do_copy
         c["database"] = Snapshot.make_snapshot(c["database"], copy: File.exist?(c["database"]))
       end

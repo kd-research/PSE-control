@@ -22,13 +22,18 @@ default: &DEFAULT
   timeout: 1000
   host: localhost
 
+sqlite3: &SQLITE3
+  adapter: sqlite3
+  database: ""
+  pool: 5
+  timeout: 1000
+
 test:
-  <<: *DEFAULT
+  <<: *SQLITE3
   adapter: sqlite3
   database: '/tmp/test.sqlite3'
 
 tmp:
-  adapter: sqlite3
+  <<: *SQLITE3
   database: ":memory:"
-  pool: 50
-  timeout: 1000
+

@@ -7,14 +7,15 @@ require "open3"
 require "shellwords"
 require_relative "../snapshot"
 require_relative "../config_loader"
+require_relative "../strategies"
 
 module AgentFormer
   def self.temp_af_config(preserve: false)
     af_config_path = File.expand_path("cfg/tmp", PROJECT_BASE)
-    if preserve || $agentformer_preserve
-      Tempfile.create(%w[auto-generated- .yml], tmpdir = af_config_path)
+    if preserve || STRATEGY::KEEP_AF_CONFIG
+      Tempfile.create(%w[auto-generated- .yml], af_config_path)
     else
-      Tempfile.new(%w[auto-generated- .yml], tmpdir = af_config_path)
+      Tempfile.new(%w[auto-generated- .yml], af_config_path)
     end
   end
 
@@ -58,10 +59,10 @@ module AgentFormer
     end
     return [cmd.shelljoin, config_content] if dry_run
 
-    log = agentformer_exec(cmd.shelljoin, message: config_content)
+    agentformer_exec(cmd.shelljoin, message: config_content)
   end
 
-  def self.call_latent_dump
+  def self.call_latent_dump(for_phase: %s(train val))
     tmpcfg = temp_af_config
     config_content = renderer_instance.render("agentformer").tap do |x|
       tmpcfg.write(x)
@@ -71,7 +72,8 @@ module AgentFormer
     config_id = File.basename(tmpcfg.path, ".yml")
     cmd = "#{CONFIG["python_path"]} latent_gen.py --cfg #{config_id}"
 
-    agentformer_exec("#{cmd} --data_eval train", message: config_content)
-    agentformer_exec("#{cmd} --data_eval val", message: config_content)
+    for_phase.each do |phase|
+      agentformer_exec("#{cmd} --data_eval #{phase}", message: config_content)
+    end
   end
 end

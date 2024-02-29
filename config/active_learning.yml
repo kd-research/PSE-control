@@ -6,7 +6,7 @@ userspec:
   kaidong:
     singularity_container: '/home/kaidong/Projects/PythonProjects/pkl-keras-train/sifs/keras.sif'
     active_learning_keras_base: '/home/kaidong/Projects/PythonProjects/pkl-keras-train'
-    python_path: 'singularity exec --nv /home/kaidong/ubuntu/keras.sif python3'
+    python_path: 'singularity exec --nv ./sifs/keras.sif python3'
 
 with_agentformer: true
 #working_directory: "/home/kaidong/PycharmProjects/pkl-keras-train"

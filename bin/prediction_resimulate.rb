@@ -1,7 +1,6 @@
 #!/usr/bin/env -S ruby -Ilib
 
 require 'bundler/setup'
-$NOINIT = true
 
 require 'active_learning'
 require 'agent_former'
@@ -32,7 +31,7 @@ def make_json_prediction
   Dir.chdir(command_work_dir) do
     command = ["#{singularity_command} predict_scene.py"]
     command << "-A" if $ablation
-    command << "-i val.json"
+    command << "-i #{$input_json}"
     command << "-C #{$latent_location}"
     if $ablation
       command << "-o ablation.json"
@@ -113,6 +112,10 @@ stages = %w[]
 OptionParser.new do |opts|
   opts.banner = "Usage: #{__FILE__} [options] <Latent directory>"
 
+  opts.on('-i', '--input=filename', 'json file that would be used as input') do |v|
+    $input_json = v
+  end
+
   opts.on('-t', '--scene-type=Type', 'type of simulation scene') do |v|
     $context.scene_name = v
   end
@@ -135,7 +138,11 @@ OptionParser.new do |opts|
     $ablation = true
   end
 
-  opts.on('--stage1', 'prediction environment from ') do
+  opts.on('--stage1', 'prediction environment from raw trajectories') do
+    stages << :stage0
+  end
+
+  opts.on('--stage1', 'prediction environment from json') do
     stages << :stage1
   end
 
@@ -162,10 +169,20 @@ database_path = if $ablation
                   File.join($latent_location, 'predict.db')
                 end
 
-ParameterDatabase.establish_connection(database: database_path, copy: false)
+ParameterDatabase.establish_connection(database: database_path, copy: true)
+
+def stage0
+  files = ParameterObject.where(label: :raw).pluck(:file)
+  renderer = AgentFormer.renderer_instance
+  renderer.instance_variable_set :@segmented, '-evac'
+  renderer.instance_variable_set :@num_epochs, 2
+  renderer.instance_variable_set :@extra, "agent_num: #{$agent_num}\n"
+  renderer.set_data_source(train_files, valid_files, [])
+
+  AgentFormer.call_latent_dump
+end
 
 def stage1
-  ParameterDatabase.initialize_database(force: true)
   make_json_prediction
 end
 

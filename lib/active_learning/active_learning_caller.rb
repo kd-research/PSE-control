@@ -5,6 +5,7 @@ require "csv"
 require "open3"
 require "shellwords"
 require "active_support/core_ext/hash/keys"
+require_relative "../strategies"
 require_relative "../snapshot"
 require_relative "../config_loader"
 require_relative "../agent_former"
@@ -28,7 +29,16 @@ module ActiveLearningCaller
 
     const_set :CONFIG, load_config("config/active_learning.yml")
     const_set :AF_CONFIG, load_config("config/agentformer.yml")
-    const_set :PROJECT_BASE, Snapshot.make_snapshot(CONFIG["active_learning_keras_base"])
+    if STRATEGY::NOINIT
+      candidate = Snapshot.make_snapshot(CONFIG["active_learning_keras_base"], copy: false)
+      if File.exist? candidate
+        const_set :PROJECT_BASE, candidate
+      else
+        const_set :PROJECT_BASE, CONFIG["active_learning_keras_base"]
+      end
+    else
+      const_set :PROJECT_BASE, Snapshot.make_snapshot(CONFIG["active_learning_keras_base"])
+    end
 
     private_constant :CONFIG, :AF_CONFIG, :PROJECT_BASE
   end
@@ -127,6 +137,20 @@ module ActiveLearningCaller
       obj.label = with_label
       obj.save!
     end; nil
+  end
+
+  def self.keras_predict(model = :test, **options)
+    ablation = options.delete(:ablation) || false
+    cmd = CONFIG["python_path"].shellsplit
+    cmd << "predict_scene.py"
+    cmd << "-A" if ablation
+    cmd << "-i" << "#{model}.json"
+    cmd << "-C" << working_dir
+    cmd << "-o" << "#{model}-#{ablation ? "ablation" : "prediction"}.json"
+
+    puts "working_dir: #{working_dir}"
+    puts "cmd: #{cmd.shelljoin}"
+    keras_exec cmd.shelljoin
   end
 
   reinitialize!

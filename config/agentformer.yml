@@ -5,9 +5,9 @@ userspec:
     python_path: 'singularity exec --nv /home/hpc/hpcguest4/sifs/torch-230724.sif python3'
 
   kaidong:
-    singularity_container: '/home/kaidong/Projects/PythonProjects/AgentFormer/sifs/torch.sif'
-    agent_former_base: '/home/kaidong/Projects/PythonProjects/AgentFormer'
-    python_path: 'singularity exec --nv /home/kaidong/ubuntu/torch.sif python3'
+    singularity_container: '/home/kaidong/Projects/PythonProjects/agentformer/sifs/torch.sif'
+    agent_former_base: '/home/kaidong/Projects/PythonProjects/agentformer'
+    python_path: 'singularity exec --nv ./sifs/torch.sif python3'
 
 result_dir: 'agentformer-result'
 

@@ -35,6 +35,7 @@ module SteerSuite
   end
 
   # @param [String] scene
+  # @param subdir: [String] subdirectory of the scene
   # @return [nil]
   def self.set_info(scene, ...)
     unless CONFIG["scene_defs"].include? scene
@@ -48,6 +49,13 @@ module SteerSuite
   end
 
   # @return [SteersimSceneInfo]
+  # Following attributes are available:
+  # - agent_former_config
+  # - parameter_size
+  # - nagent
+  # - data_location : Hash[Symbol, String]
+  #   - :train, :valid, :test
+  #
   def self.info
     @info || raise("No scene info set")
   end

@@ -4,6 +4,7 @@ require "tmpdir"
 require "tempfile"
 require "fileutils"
 require "securerandom"
+require_relative "strategies"
 require_relative "storage_loader"
 
 module Snapshot
@@ -14,10 +15,10 @@ module Snapshot
     @reusing_snapshot = false
   end
 
+  # Reuse a snapshot from a given path, contents will be modified
   def reuse_snapshot!(path)
     if const_defined?(:SNAPSHOT_PATH)
-      Dir.rmdir(SNAPSHOT_PATH) if Dir.empty?(SNAPSHOT_PATH)
-      remove_const(:SNAPSHOT_PATH)
+      abort "Cannot reuse snapshot, already initialized"
     end
 
     const_set(:SNAPSHOT_PATH, path)
@@ -33,6 +34,7 @@ module Snapshot
     FileUtils.mkdir_p(path)
     snpath = Dir.mktmpdir(%w[activeloop- .snapshot], path)
     puts "Initialized snapshot path: #{snpath}"
+    File.write(path + "/.last-snapshot-path", snpath)
     const_set(:SNAPSHOT_PATH, snpath)
   end
 
@@ -50,20 +52,28 @@ module Snapshot
     file.path
   end
 
-  def make_snapshot(path, copy: !$NOINIT)
+  # By default, copy the contents of the path to the snapshot
+  # Otherwise
+  def make_snapshot(path, copy: true, subpath: nil)
+    copy = false if STRATEGY::NOINIT
+
     basename = File.basename(path)
+    basename = File.join(subpath, basename) if subpath
     target = File.join(SNAPSHOT_PATH, basename)
     if File.exist?(target) && !@reusing_snapshot
-      warn "Snapshot #{basename} already exists, not overwriting."
-    else
-      FileUtils.cp_r(path, SNAPSHOT_PATH) if copy
+      warn "From: #{caller(1..1).first}, Snapshot #{basename} already exists"
     end
+    FileUtils.mkdir_p(File.dirname(target))
+    FileUtils.cp_r(path, target) if copy
     target
   end
 
   def recover_snapshot_from(path)
-    make_snapshot("#{path}/agentformer-result")
+    unless path.end_with?("agentformer-result")
+      path = File.join(path, "agentformer-result")
+    end
+    make_snapshot(path)
   end
 
-  reinitialize!
+  reinitialize! unless STRATEGY::NOINIT
 end
