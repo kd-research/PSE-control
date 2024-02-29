@@ -2,19 +2,9 @@
 require "bundler/setup"
 require "json"
 
-module STRATEGY; end
-STRATEGY::NOINIT = true
-
-args = OpenStruct.new({
-  scene_name: "scene_evac_sf_2",
-  subdir: "homogeneous",
-  af_result_path: "/home/kaidong/Projects/RubymineProjects/ActiveLoop/storage/snapshots/sf3-homo-test-full",
-  agent_num: 10
-})
-
 module ActiveLoopTools
-  module LOAD_PRED_AND_SIM
-    def self.init(args)
+  module LoadPredictions
+    def standalone_init(args)
       require "snapshot"
       Snapshot.reuse_snapshot!(args.af_result_path)
 
@@ -26,7 +16,7 @@ module ActiveLoopTools
       ParameterDatabase.establish_connection(target: :sqlite3, database: metadata_path, copy: false)
     end
 
-    def self.load_prediction(af_result_path)
+    def load_prediction(af_result_path)
       prediction_file = File.join(ActiveLearningCaller.working_dir, "test-prediction.json")
       File.readlines(prediction_file).map do |line|
         datum = JSON.parse(line)
@@ -39,7 +29,7 @@ module ActiveLoopTools
 
     end
 
-    def self.load_ablation(af_result_path)
+    def load_ablation(af_result_path)
       prediction_file = File.join(ActiveLearningCaller.working_dir, "test-ablation.json")
       File.readlines(prediction_file).map do |line|
         datum = JSON.parse(line)
@@ -51,11 +41,24 @@ module ActiveLoopTools
       end
     end
 
+    module_function :standalone_init, :load_prediction, :load_ablation
   end
 end
 
-ActiveLoopTools::LOAD_PRED_AND_SIM.init(args)
-ActiveLoopTools::LOAD_PRED_AND_SIM.load_prediction(args.af_result_path)
-ActiveLoopTools::LOAD_PRED_AND_SIM.load_ablation(args.af_result_path)
-SteerSuite.simulate_unsimulated
+if __FILE__ == $0
+  module STRATEGY; end
+  STRATEGY::NOINIT = true
+
+  args = OpenStruct.new({
+    scene_name: "scene_evac_sf_2",
+    subdir: "homogeneous",
+    af_result_path: "/home/kaidong/Projects/RubymineProjects/ActiveLoop/storage/snapshots/sf3-homo-test-full",
+    agent_num: 10
+  })
+
+  ActiveLoopTools::LoadPredictions.standalone_init(args)
+  ActiveLoopTools::LoadPredictions.load_prediction(args.af_result_path)
+  ActiveLoopTools::LoadPredictions.load_ablation(args.af_result_path)
+  SteerSuite.simulate_unsimulated
+end
 
