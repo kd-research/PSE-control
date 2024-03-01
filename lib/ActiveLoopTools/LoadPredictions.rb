@@ -16,7 +16,7 @@ module ActiveLoopTools
       ParameterDatabase.establish_connection(target: :sqlite3, database: metadata_path, copy: false)
     end
 
-    def load_prediction(af_result_path)
+    def load_prediction
       prediction_file = File.join(ActiveLearningCaller.working_dir, "test-prediction.json")
       File.readlines(prediction_file).map do |line|
         datum = JSON.parse(line)
@@ -29,7 +29,7 @@ module ActiveLoopTools
 
     end
 
-    def load_ablation(af_result_path)
+    def load_ablation
       prediction_file = File.join(ActiveLearningCaller.working_dir, "test-ablation.json")
       File.readlines(prediction_file).map do |line|
         datum = JSON.parse(line)
@@ -57,8 +57,8 @@ if __FILE__ == $0
   })
 
   ActiveLoopTools::LoadPredictions.standalone_init(args)
-  ActiveLoopTools::LoadPredictions.load_prediction(args.af_result_path)
-  ActiveLoopTools::LoadPredictions.load_ablation(args.af_result_path)
+  ActiveLoopTools::LoadPredictions.load_prediction
+  ActiveLoopTools::LoadPredictions.load_ablation
   SteerSuite.simulate_unsimulated
 end
 

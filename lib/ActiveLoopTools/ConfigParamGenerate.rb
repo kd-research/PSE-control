@@ -3,7 +3,7 @@ require "bundler/setup"
 require "ostruct"
 
 module ActiveLoopTools
-  module GenerateConfig
+  module ConfigParamGenerate
     # Init is only required if the tool is running as a standalone script
     # @param [OpenStruct] args
     # @return [void]
@@ -15,7 +15,7 @@ module ActiveLoopTools
       SteerSuite.set_info(args.scene_name, subdir: args.subdir)
     end
 
-    def generate_config(args)
+    def generate_config
       require "active_learning"
 
       ActiveLearningCaller.keras_predict(:test, ablation: false)
@@ -36,6 +36,6 @@ if __FILE__ == $0
 
   module STRATEGY; end
   STRATEGY::NOINIT = true
-  ActiveLoopTools::GenerateConfig.standalone_init(args)
-  ActiveLoopTools::GenerateConfig.generate_config(args)
+  ActiveLoopTools::ConfigParamGenerate.standalone_init(args)
+  ActiveLoopTools::ConfigParamGenerate.generate_config
 end

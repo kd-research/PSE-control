@@ -38,8 +38,8 @@ module Snapshot
     const_set(:SNAPSHOT_PATH, snpath)
   end
 
-  def make_empty_snapshot(path)
-    target = make_snapshot(path, copy: false)
+  def make_empty_snapshot(path, exist_ok: false)
+    target = make_snapshot(path, copy: false, exist_ok: exist_ok)
     FileUtils.mkdir_p(target)
     target
   end
@@ -54,13 +54,13 @@ module Snapshot
 
   # By default, copy the contents of the path to the snapshot
   # Otherwise
-  def make_snapshot(path, copy: true, subpath: nil)
+  def make_snapshot(path, copy: true, subpath: nil, exist_ok: false)
     copy = false if STRATEGY::NOINIT
 
     basename = File.basename(path)
     basename = File.join(subpath, basename) if subpath
     target = File.join(SNAPSHOT_PATH, basename)
-    if File.exist?(target) && !@reusing_snapshot
+    unless File.exist?(target).! || @reusing_snapshot || exist_ok
       warn "From: #{caller(1..1).first}, Snapshot #{basename} already exists"
     end
     FileUtils.mkdir_p(File.dirname(target))

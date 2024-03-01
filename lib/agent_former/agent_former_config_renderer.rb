@@ -20,7 +20,7 @@ module AgentFormer
       @result_dir = if File.exist?(orig_dir)
         Snapshot.make_snapshot(orig_dir)
       else
-        Snapshot.make_empty_snapshot(orig_dir)
+        Snapshot.make_empty_snapshot(orig_dir, exist_ok: true)
       end
     end
 
