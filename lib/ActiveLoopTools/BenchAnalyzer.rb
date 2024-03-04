@@ -17,7 +17,7 @@ module ActiveLoopTools
     def get_metric_from_text(content, metric)
       if content.nil?
         warn "No content while extracting metric #{metric}"
-        return 0
+        return nil
       end
       lines = content.lines
       keys = lines[1].split
@@ -31,6 +31,7 @@ module ActiveLoopTools
     # @param [String] metric the metric to compare
     def report_difference_for(label1, label2, metric)
       abs_diff_arr = []
+
       ParameterObject.where(label: label1).each do |p1|
         p2 = p1.predicted_as.where(label: label2).first
         if p2.nil?
@@ -40,8 +41,11 @@ module ActiveLoopTools
 
         e1 = get_metric_from_text p1&.benchmark&.log, metric
         e2 = get_metric_from_text p2&.benchmark&.log, metric
+        next if e1.nil? || e2.nil?
         abs_diff_arr << (e1.to_f - e2.to_f).abs
       end
+
+      abs_diff_arr.compact!
       abs_diff_arr.sum / abs_diff_arr.size
     end
 

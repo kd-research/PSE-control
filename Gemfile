@@ -8,7 +8,7 @@ ruby "3.0.6"
 
 # gem "rails"
 gem "openssl"
-gem "activerecord"
+gem "activerecord", ">= 7.1.2"
 gem "parallel"
 gem "rake"
 gem "yaml"
