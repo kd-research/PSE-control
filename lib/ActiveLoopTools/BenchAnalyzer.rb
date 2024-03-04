@@ -5,6 +5,7 @@ module ActiveLoopTools
   module BenchAnalyzer
     # Initialize the module when it is used as a standalone script
     # @param [Hash] args the arguments to initialize the module
+    # @option args [String] :target_db the path to the database
     def standalone_init(args)
       require "parameter_object"
       ParameterDatabase.establish_connection(target: :sqlite3, database: args[:target_db], copy: false)
@@ -15,7 +16,7 @@ module ActiveLoopTools
     # @return [String] the value of the metric
     def get_metric_from_text(content, metric)
       if content.nil?
-        warn "No content"
+        warn "No content while extracting metric #{metric}"
         return 0
       end
       lines = content.lines

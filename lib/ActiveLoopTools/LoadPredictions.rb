@@ -4,14 +4,14 @@ require "json"
 
 module ActiveLoopTools
   module LoadPredictions
+    # This method is used to initialize the environment for loading predictions
+    # The only argument is a struct with the following fields:
+    #  af_result_path: the path to the result of the agentformer
     def standalone_init(args)
       require "snapshot"
       Snapshot.reuse_snapshot!(args.af_result_path)
 
-      require "steer_suite"
-      require "parameter_object"
       require "active_learning"
-      SteerSuite.set_info(args.scene_name, subdir: args.subdir)
       metadata_path = File.join(args.af_result_path, "agentformer-result", "metadata.sqlite3")
       ParameterDatabase.establish_connection(target: :sqlite3, database: metadata_path, copy: false)
     end
