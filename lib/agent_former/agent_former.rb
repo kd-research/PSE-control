@@ -62,7 +62,7 @@ module AgentFormer
     agentformer_exec(cmd.shelljoin, message: config_content)
   end
 
-  def self.call_latent_dump(for_phase: %s(train val))
+  def self.call_latent_dump(for_phase: %i(train val))
     tmpcfg = temp_af_config
     config_content = renderer_instance.render("agentformer").tap do |x|
       tmpcfg.write(x)
