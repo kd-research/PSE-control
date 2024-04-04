@@ -3,7 +3,7 @@
 require_relative "../test_helper"
 require "stringio"
 
-class SteersimReaderTest < MiniTest::Test
+class SteersimReaderTest < Minitest::Test
   def setup
     @ss_struct_data = SteerSuite::Data::SteersimBinary.new.tap do |s|
       s.filename = nil
