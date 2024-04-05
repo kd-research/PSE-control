@@ -52,6 +52,7 @@ module SteerSuite
     end
 
     def validate_raw(remove: false)
+      require "tqdm"
       puts "Going to validate #{ParameterObject.raw.count} files"
       mark_proc = proc do |doc|
         doc.state = if doc.as_scenario_obj.valid?

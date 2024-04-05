@@ -42,6 +42,8 @@ module ParameterDatabase
   end
 
   def load_from_directory(dirname, **kwargs)
+    require "tqdm"
+
     valid_method = kwargs.delete(:valid_method)
     abort "No such directory: #{dirname}" unless Dir.exist? dirname
     files = Dir.glob(File.join(dirname, "*.bin"))
