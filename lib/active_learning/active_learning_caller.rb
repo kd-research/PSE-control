@@ -91,11 +91,12 @@ module ActiveLearningCaller
   # @option ext_configs [String] :epochs
   # @option ext_configs [String] :batch_size
   # @return [void]
-  def self.keras_train(...)
-    fill_keras_cfg(...)
+  def self.keras_train(**options)
+    use_cpn = options.delete(:use_cpn) || true
+    fill_keras_cfg(**options)
 
     cmd = CONFIG["python_path"].shellsplit
-    cmd << "keras_train.py"
+    cmd << (use_cpn ? "keras_train.py" : "plain_train.py")
     cmd << working_dir
 
     keras_exec cmd.shelljoin
