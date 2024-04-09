@@ -88,11 +88,12 @@ module ActiveLearningCaller
   ##
   # Train the model
   # @param [Hash] ext_configs
-  # @option ext_configs [String] :epochs
-  # @option ext_configs [String] :batch_size
+  # @option options [Bool] :use_cpn
+  # @option options [String] :epochs
+  # @option options [String] :batch_size
   # @return [void]
   def self.keras_train(**options)
-    use_cpn = options.delete(:use_cpn) || true
+    use_cpn = options.delete(:use_cpn) { true }
     fill_keras_cfg(**options)
 
     cmd = CONFIG["python_path"].shellsplit
