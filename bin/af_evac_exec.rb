@@ -1,4 +1,5 @@
 #!/usr/bin/env -S ruby -s -Ilib
+require 'bundler/setup'
 require 'pry'
 require 'tqdm'
 require 'agent_former'

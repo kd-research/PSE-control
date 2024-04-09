@@ -20,6 +20,7 @@ args = OpenStruct.new(
   scene_name: "scene_evac_#{argarr[1]}",
   subdir: subdir_map[argarr[2]],
   result_path: argarr[3],
+  bench_type: argarr[4],
   agent_num: 10,
 )
 
@@ -34,7 +35,7 @@ alt::LoadPredictions.load_ablation
 SteerSuite.simulate_unsimulated
 
 report_hash = args.to_h
-report_hash[:pred_diff] = alt::BenchAnalyzer.report_difference_for('budget-ground', 'prediction', 'ple_energy')
-report_hash[:ablation_diff] = alt::BenchAnalyzer.report_difference_for('budget-ground', 'ablation', 'ple_energy')
+report_hash[:pred_diff] = alt::BenchAnalyzer.report_difference_for('budget-ground', 'prediction', args.bench_type)
+report_hash[:ablation_diff] = alt::BenchAnalyzer.report_difference_for('budget-ground', 'ablation', args.bench_type)
 
 puts "@Report #{report_hash.to_json}"
