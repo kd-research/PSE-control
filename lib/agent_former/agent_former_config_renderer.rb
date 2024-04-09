@@ -56,7 +56,8 @@ module AgentFormer
 
     def agent_former_extra
       SteerSuite.info.agent_former_config.to_yaml.delete_prefix("---\n")
-    rescue /No scene info set/
+    rescue RuntimeError => e
+      raise e unless e.message.include? "No scene info set"
       ""
     end
 

@@ -67,8 +67,12 @@ module ActiveLearningCaller
     if CONFIG["with_agentformer"]
       agentformer_result_dir = AgentFormer.const_get(:CONFIG)["result_dir"]
       agentformer_base_dir = Snapshot.make_snapshot(agentformer_result_dir, copy: false, exist_ok: true)
-      agentformer_model_yaml = AgentFormer.renderer_instance.render("agentformer")
-      agentformer_model_dir = YAML.safe_load(agentformer_model_yaml)["as"]
+      agentformer_model_dir = begin
+        agentformer_model_yaml = AgentFormer.renderer_instance.render("agentformer")
+        YAML.safe_load(agentformer_model_yaml)["as"]
+      rescue RuntimeError
+        "agent_former"
+      end
       File.join(agentformer_base_dir, agentformer_model_dir, "latents")
     else
       StorageLoader.get_absolute_path CONFIG["working_directory"]
@@ -76,8 +80,14 @@ module ActiveLearningCaller
   end
 
   def self.fill_keras_cfg(ext_configs = {})
+    override = ext_configs.delete(:override) || false
     # now Agentformer handles configuration
     ftarget = File.join(working_dir, "model.yml")
+    if File.exist?(ftarget) && !override
+      warn "model.yml already exists, skipping"
+      return
+    end
+
     configs = YAML.safe_load_file(ftarget)
     # puts ext_configs into config
     configs.merge!(ext_configs)
