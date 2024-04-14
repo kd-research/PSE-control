@@ -7,6 +7,12 @@ require "securerandom"
 require_relative "strategies"
 require_relative "storage_loader"
 
+# @!parse
+#   module Snapshot
+#     # Path to the snapshot
+#     SNAPSHOT_PATH = snapthot_path
+#   end
+
 module Snapshot
   module_function
 
