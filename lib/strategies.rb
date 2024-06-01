@@ -1,3 +1,5 @@
+# @!parse STRATEGY::NOINIT = false
+# @!parse STRATEGY::KEEP_AF_CONFIG = true
 module STRATEGY
   defaults = {
     NOINIT: false,

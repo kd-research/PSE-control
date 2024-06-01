@@ -1,0 +1,84 @@
+#!/usr/bin/env -S ruby -Ilib
+
+module STRATEGY
+  NOINIT = true
+end
+
+require "bundler/setup"
+require "readline"
+
+puts <<~EOF
+  Select a scenario type to run
+  1. social force
+  2. orca
+  3. egocentric cognitive
+EOF
+
+def prompt_for_scenario
+  while true
+    line = Readline.readline("[1-3] > ", true)
+    if (0..3).map(&:to_s).include?(line)
+      @scenario = line.to_i
+      break
+    end
+
+    puts "Invalid scenario type"
+  end
+
+  puts "Select a sub-scenario index"
+  while (line = Readline.readline("[0-14] > ", true))
+    if (0..14).map(&:to_s).include?(line)
+      @sub_scenario = line.to_i
+      break
+    end
+
+    puts "Invalid sub-scenario index"
+  end
+
+  puts "Select a folder to save the results"
+  puts "Default: #{Dir.home}/Downloads"
+  puts "Open a file dialog? [y/N]"
+  @save_directory = if Readline.readline("> ", true).downcase == "y"
+    `zenity --file-selection --directory`.chomp
+  else
+    "#{Dir.home}/Downloads"
+  end
+end
+
+def prepare_configuration
+  require "snapshot"
+  require "steer_suite"
+
+  Snapshot.reinitialize!
+  scene = +"scene_evac_"
+  scene << case @scenario
+  when 1
+    "sf"
+  when 2
+    "orca"
+  when 3
+    "cog"
+  end
+
+  scene << "_#{@sub_scenario}" if @sub_scenario > 0
+  SteerSuite.set_info(scene)
+end
+
+def run_scenario
+  r, w = IO.pipe
+  parameters = Array.new(SteerSuite.info.parameter_size) { rand }
+  parameters[0] = 0.5
+
+  filename = SteerSuite.exec_simulate(parameters.map(&:to_s).join(" "),
+    benchmark_pipe: w, steersim_record_path: @save_directory)
+
+  File.write(Pathname(filename).sub_ext(".bm"), r.read) if IO.select([r], nil, nil, 0)
+
+  puts "File saved to #{filename}"
+ensure
+  r.close
+end
+
+prompt_for_scenario
+prepare_configuration
+run_scenario

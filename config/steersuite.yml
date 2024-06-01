@@ -44,6 +44,7 @@ scene_defs:
   - scene_evac_sf_12
   - scene_evac_sf_13
   - scene_evac_sf_14
+  - scene_evac_cog
 
 steersuite_scene:
   basic:
@@ -227,3 +228,10 @@ steersuite_scene:
       env_parameter_size: 0
       agent_parameter_size: 1
 
+    scene_evac_cog:
+      scene_name: sceneEvacCOG
+      parameter_size: 751
+      nagent: 75
+      ai: egocentric-cognitive
+      env_parameter_size: 1
+      agent_parameter_size: 10

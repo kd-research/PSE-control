@@ -13,8 +13,11 @@ module SteerSuite
     def set_ai(ai_type)
       case ai_type
       when "social-force"
-        SteersimConfig.search("spatialDatabase").remove
+        SteersimConfig.search("useDatabase").remove
         SteersimConfig.at("scenarioAI").content = "sfAI"
+      when "egocentric-cognitive"
+        SteersimConfig.search("useDatabase").remove
+        SteersimConfig.at("scenarioAI").content = "cog-ai"
       end
     end
 

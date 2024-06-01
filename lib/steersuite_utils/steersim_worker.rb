@@ -33,12 +33,15 @@ module SteerSuite
 
     # Take steersim processing a string document and return
     # the path of generated steersim binary record
-    # @param [String] doc
-    # @param [Boolean] dry_run
-    # @param [IO] benchmark_pipe
-    # @param [Hash, nil] dry_hash
-    def exec_simulate(doc, dry_run: false, benchmark_pipe: nil, dry_hash: nil)
-      steersim_record_path = StorageLoader.get_absolute_path(CONFIG["steersuite_record_pool"])
+    # @param [String] doc The steersim document
+    # @param [Boolean] dry_run If true, return the hash of the command
+    # @param [IO] benchmark_pipe If provided, write the benchmark log to the pipe
+    # @param [Hash, nil] dry_hash If provided, update the hash with the command
+    # @param [Hash] opts
+    # @option opts [String] :steersim_record_path Override the steersim record path
+    # @return [String, nil]
+    def exec_simulate(doc, dry_run: false, benchmark_pipe: nil, dry_hash: nil, **opts)
+      steersim_record_path = opts.delete(:steersim_record_path) || StorageLoader.get_absolute_path(CONFIG["steersuite_record_pool"])
       ld_library_path_arr = ENV["LD_LIBRARY_PATH"]&.split(":") || []
       ld_library_path_arr << File.join(CONFIG["steersuite_exec_base"], "..", "lib")
       ld_library_path_arr << File.join(CONFIG["steersuite_exec_base"], "lib")
@@ -87,8 +90,8 @@ module SteerSuite
           if buffer.include?("Finished scenario 0\n")
             simulated = buffer.slice_after { |l| l == "Finished scenario 0\n" }.to_a.dig(1, 0)&.chomp
           else
-            puts "Bad simulation result for #{doc.first(10)}, dump last 3 lines and discard."
-            puts(buffer.last(3).map { |l| "[#{doc.first(10)}]: #{l.chomp}" })
+            puts "Bad simulation result for #{doc[..10]}, dump last 3 lines and discard."
+            puts(buffer.last(3).map { |l| "[#{doc[..10]}]: #{l.chomp}" })
           end
         end
       rescue BadSimulationError
