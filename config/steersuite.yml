@@ -1,10 +1,10 @@
 userspec:
   hpcguest4:
     steersuite_exec_base: "/home/hpc/hpcguest4/ActiveLoopProject/SteerSuite-P2/build/bin"
-    steersuite_exec_cmd: "singularity exec --env LD_LIBRARY_PATH=$LD_LIBRARY_PATH --nv /home/hpc/hpcguest4/sifs/hlsix-220922.sif ./steersim -commandline"
+    steersuite_exec_cmd: "singularity exec --env LD_LIBRARY_PATH=$LD_LIBRARY_PATH --nv /home/hpc/hpcguest4/sifs/steersim-240718.sif ./steersim -commandline"
   kaidong:
-    steersuite_exec_base: "/home/kaidong/Projects/CLionProjects/SteerSuite-P2/build/bin"
-    steersuite_exec_cmd: "singularity exec --env LD_LIBRARY_PATH=$LD_LIBRARY_PATH /home/kaidong/Projects/CLionProjects/SteerSuite-P2/steersim.sif ./steersim -commandline"
+    steersuite_exec_base: "/home/kaidong/Projects/SteerProjects/MySteerSuite/build/bin"
+    steersuite_exec_cmd: "singularity exec --env LD_LIBRARY_PATH=$LD_LIBRARY_PATH /home/kaidong/Projects/SteerProjects/steersim.sif ./steersim -commandline"
 
 steersuite_record_pool: "steersimRecord-generated"
 steersuite_process_pool: "steersimRecord-generated-process"
@@ -45,6 +45,17 @@ scene_defs:
   - scene_evac_sf_13
   - scene_evac_sf_14
   - scene_evac_cog
+  - scene_evac_cog_1
+  - scene_evac_cog_2
+  - scene_evac_cog_3
+  - scene_evac_cog_4
+  - scene_evac_cog_5
+  - scene_evac_cog_6
+  - scene_evac_cog_7
+  - scene_evac_cog_8
+  - scene_evac_cog_9
+  - scene_evac_cog_10
+  - scene_evac_cog_11
 
 steersuite_scene:
   basic:
@@ -79,6 +90,12 @@ steersuite_scene:
       parameter_size: 17
       nagent: 5
 
+    _evac_single_parameter: &evac_single_parameter
+      parameter_size: 75
+      nagent: 75
+      env_parameter_size: 0
+      agent_parameter_size: 1
+
     scene_evac_orca:
       scene_name: sceneEvacORCA
       parameter_size: 376
@@ -86,41 +103,23 @@ steersuite_scene:
       env_parameter_size: 1
       agent_parameter_size: 5
     scene_evac_orca_1:
+      <<: *evac_single_parameter
       scene_name: sceneEvacOrca1
-      parameter_size: 1
-      nagent: 75
-      env_parameter_size: 1
-      agent_parameter_size: 0
     scene_evac_orca_2:
       scene_name: sceneEvacOrca2
-      parameter_size: 75
-      nagent: 75
-      env_parameter_size: 0
-      agent_parameter_size: 1
+      <<: *evac_single_parameter
     scene_evac_orca_3:
       scene_name: sceneEvacOrca3
-      parameter_size: 75
-      nagent: 75
-      env_parameter_size: 0
-      agent_parameter_size: 1
+      <<: *evac_single_parameter
     scene_evac_orca_4:
       scene_name: sceneEvacOrca4
-      parameter_size: 75
-      nagent: 75
-      env_parameter_size: 0
-      agent_parameter_size: 1
+      <<: *evac_single_parameter
     scene_evac_orca_5:
       scene_name: sceneEvacOrca5
-      parameter_size: 75
-      nagent: 75
-      env_parameter_size: 0
-      agent_parameter_size: 1
+      <<: *evac_single_parameter
     scene_evac_orca_6:
       scene_name: sceneEvacOrca6
-      parameter_size: 75
-      nagent: 75
-      env_parameter_size: 0
-      agent_parameter_size: 1
+      <<: *evac_single_parameter
 
     scene_evac_sf:
       scene_name: sceneEvacSF
@@ -131,102 +130,60 @@ steersuite_scene:
       agent_parameter_size: 13
     scene_evac_sf_1:
       scene_name: sceneEvacSF1
-      parameter_size: 1
-      nagent: 75
+      <<: *evac_single_parameter
       ai: social-force
-      env_parameter_size: 1
-      agent_parameter_size: 0
     scene_evac_sf_2:
       scene_name: sceneEvacSF2
-      parameter_size: 75
-      nagent: 75
+      <<: *evac_single_parameter
       ai: social-force
-      env_parameter_size: 0
-      agent_parameter_size: 1
     scene_evac_sf_3:
       scene_name: sceneEvacSF3
-      parameter_size: 75
-      nagent: 75
+      <<: *evac_single_parameter
       ai: social-force
-      env_parameter_size: 0
-      agent_parameter_size: 1
     scene_evac_sf_4:
       scene_name: sceneEvacSF4
-      parameter_size: 75
-      nagent: 75
+      <<: *evac_single_parameter
       ai: social-force
-      env_parameter_size: 0
-      agent_parameter_size: 1
     scene_evac_sf_5:
       scene_name: sceneEvacSF5
-      parameter_size: 75
-      nagent: 75
+      <<: *evac_single_parameter
       ai: social-force
-      env_parameter_size: 0
-      agent_parameter_size: 1
     scene_evac_sf_6:
       scene_name: sceneEvacSF6
-      parameter_size: 75
-      nagent: 75
+      <<: *evac_single_parameter
       ai: social-force
-      env_parameter_size: 0
-      agent_parameter_size: 1
     scene_evac_sf_7:
       scene_name: sceneEvacSF7
-      parameter_size: 75
-      nagent: 75
+      <<: *evac_single_parameter
       ai: social-force
-      env_parameter_size: 0
-      agent_parameter_size: 1
     scene_evac_sf_8:
       scene_name: sceneEvacSF8
-      parameter_size: 75
-      nagent: 75
+      <<: *evac_single_parameter
       ai: social-force
-      env_parameter_size: 0
-      agent_parameter_size: 1
     scene_evac_sf_9:
       scene_name: sceneEvacSF9
-      parameter_size: 75
-      nagent: 75
+      <<: *evac_single_parameter
       ai: social-force
-      env_parameter_size: 0
-      agent_parameter_size: 1
     scene_evac_sf_10:
       scene_name: sceneEvacSF10
-      parameter_size: 75
-      nagent: 75
+      <<: *evac_single_parameter
       ai: social-force
-      env_parameter_size: 0
-      agent_parameter_size: 1
     scene_evac_sf_11:
       scene_name: sceneEvacSF11
-      parameter_size: 75
-      nagent: 75
+      <<: *evac_single_parameter
       ai: social-force
-      env_parameter_size: 0
-      agent_parameter_size: 1
     scene_evac_sf_12:
       scene_name: sceneEvacSF12
-      parameter_size: 75
-      nagent: 75
+      <<: *evac_single_parameter
       ai: social-force
-      env_parameter_size: 0
-      agent_parameter_size: 1
     scene_evac_sf_13:
       scene_name: sceneEvacSF13
-      parameter_size: 75
-      nagent: 75
+      <<: *evac_single_parameter
       ai: social-force
-      env_parameter_size: 0
-      agent_parameter_size: 1
     scene_evac_sf_14:
       scene_name: sceneEvacSF14
-      parameter_size: 75
-      nagent: 75
+      <<: *evac_single_parameter
       ai: social-force
-      env_parameter_size: 0
-      agent_parameter_size: 1
 
     scene_evac_cog:
       scene_name: sceneEvacCOG
@@ -235,3 +192,47 @@ steersuite_scene:
       ai: egocentric-cognitive
       env_parameter_size: 1
       agent_parameter_size: 10
+    scene_evac_cog_1:
+      scene_name: sceneEvacCOG1
+      <<: *evac_single_parameter
+      ai: egocentric-cognitive
+    scene_evac_cog_2:
+      scene_name: sceneEvacCOG2
+      <<: *evac_single_parameter
+      ai: egocentric-cognitive
+    scene_evac_cog_3:
+      scene_name: sceneEvacCOG3
+      <<: *evac_single_parameter
+      ai: egocentric-cognitive
+    scene_evac_cog_4:
+      scene_name: sceneEvacCOG4
+      <<: *evac_single_parameter
+      ai: egocentric-cognitive
+    scene_evac_cog_5:
+      scene_name: sceneEvacCOG5
+      <<: *evac_single_parameter
+      ai: egocentric-cognitive
+    scene_evac_cog_6:
+      scene_name: sceneEvacCOG6
+      <<: *evac_single_parameter
+      ai: egocentric-cognitive
+    scene_evac_cog_7:
+      scene_name: sceneEvacCOG7
+      <<: *evac_single_parameter
+      ai: egocentric-cognitive
+    scene_evac_cog_8:
+      scene_name: sceneEvacCOG8
+      <<: *evac_single_parameter
+      ai: egocentric-cognitive
+    scene_evac_cog_9:
+      scene_name: sceneEvacCOG9
+      <<: *evac_single_parameter
+      ai: egocentric-cognitive
+    scene_evac_cog_10:
+      scene_name: sceneEvacCOG10
+      <<: *evac_single_parameter
+      ai: egocentric-cognitive
+    scene_evac_cog_11:
+      scene_name: sceneEvacCOG11
+      <<: *evac_single_parameter
+      ai: egocentric-cognitive

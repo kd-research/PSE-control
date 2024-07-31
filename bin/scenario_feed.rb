@@ -7,8 +7,8 @@ require 'steer_suite'
 require 'parameter_record/parameter_object'
 require 'parameter_record/parameter_object_relation'
 
-$amount = $amount&.to_i || 200
-$try_amount = $try_amount&.to_i || 50
+$amount = $amount&.to_i || 750  # train 400 + valid 150 + test 200
+$try_amount = $try_amount&.to_i || 900
 
 # @param scene [String] name of the scene, used to identify the scene in config file
 # @param subdir [String] subdirectory of the scene
@@ -18,6 +18,8 @@ $try_amount = $try_amount&.to_i || 50
 #  scene_evac_sf_[2-14]: 75
 #  scene_evac_orca_1: 1
 #  scene_evac_orca_[2-6]: 75
+#  scene_evac_cog_1: 1
+#  scene_evac_cog_[2-11]: 75
 def feed_scene(scene, subdir: nil)
   SteerSuite.reinitialize!
 
@@ -53,12 +55,12 @@ def feed_scene(scene, subdir: nil)
 end
 
 begin
-  (2..6).each do |i|
-    feed_scene("scene_evac_orca_#{i}", subdir: 'homogeneous/test') do
+  (2..11).each do |i|
+    feed_scene("scene_evac_orca_#{i}", subdir: 'homogeneous') do
       [rand] * 75
     end
 
-    feed_scene("scene_evac_orca_#{i}", subdir: 'heterogeneous/test') do
+    feed_scene("scene_evac_orca_#{i}", subdir: 'heterogeneous') do
       Array.new(75) { rand }
     end
   end

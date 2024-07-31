@@ -23,6 +23,7 @@ GEM
     json (2.6.3)
     language_server-protocol (3.17.0.3)
     lint_roller (1.1.0)
+    matrix (0.4.2)
     method_source (1.0.0)
     minitest (5.16.3)
     nokogiri (1.14.2-x86_64-linux)
@@ -106,6 +107,7 @@ PLATFORMS
 DEPENDENCIES
   activerecord
   descriptive_statistics
+  matrix (~> 0.4.2)
   minitest
   nokogiri
   openssl
@@ -118,9 +120,6 @@ DEPENDENCIES
   standardrb
   tqdm
   yaml
-
-RUBY VERSION
-   ruby 3.0.6p216
 
 BUNDLED WITH
    2.2.33
