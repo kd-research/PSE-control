@@ -56,11 +56,11 @@ end
 
 begin
   (2..11).each do |i|
-    feed_scene("scene_evac_orca_#{i}", subdir: 'homogeneous') do
+    feed_scene("scene_evac_cog_#{i}", subdir: 'homogeneous') do
       [rand] * 75
     end
 
-    feed_scene("scene_evac_orca_#{i}", subdir: 'heterogeneous') do
+    feed_scene("scene_evac_cog_#{i}", subdir: 'heterogeneous') do
       Array.new(75) { rand }
     end
   end
