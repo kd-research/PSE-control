@@ -39,6 +39,13 @@ module ActiveLoopTools
           next
         end
 
+        if p1.file =~ /INVALID/ || p2.file =~ /INVALID/
+          if $DEBUG
+            warn "Invalid file for #{p1.id} or #{p2.id}\np1: #{p1.file}\np2: #{p2.file}"
+          end
+          next
+        end
+
         e1 = get_metric_from_text p1&.benchmark&.log, metric
         e2 = get_metric_from_text p2&.benchmark&.log, metric
         next if e1.nil? || e2.nil?

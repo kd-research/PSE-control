@@ -11,7 +11,7 @@ cat << HERE | sbatch
 #!/bin/bash
 
 #SBATCH --job-name=$2
-#SBATCH --output=$2.out
+#SBATCH --output=localfiles/$2.out
 ##SBATCH --ntasks=2                             # batch setting
 #SBATCH --ntasks=7                              # active setting
 #SBATCH --nodes=1

@@ -17,6 +17,8 @@ module ActiveLoopTools
     end
 
     def load_prediction
+      require "active_learning"
+
       prediction_file = File.join(ActiveLearningCaller.working_dir, "test-prediction.json")
       File.readlines(prediction_file).map do |line|
         datum = JSON.parse(line)
@@ -30,6 +32,8 @@ module ActiveLoopTools
     end
 
     def load_ablation
+      require "active_learning"
+
       prediction_file = File.join(ActiveLearningCaller.working_dir, "test-ablation.json")
       File.readlines(prediction_file).map do |line|
         datum = JSON.parse(line)
@@ -41,7 +45,23 @@ module ActiveLoopTools
       end
     end
 
-    module_function :standalone_init, :load_prediction, :load_ablation
+    def load_reference
+      require "active_learning"
+
+      ParameterObject.where(label: 'budget-ground').each do |po|
+        new = ParameterObject.new(split: :test, state: :raw, label: :truthy)
+        new.safe_set_parameter(po.parameters)
+        new.predicted_from = po
+        new.save!
+
+        new = ParameterObject.new(split: :test, state: :raw, label: :random)
+        new.safe_set_parameter(po.parameters.map { rand })
+        new.predicted_from = po
+        new.save!
+      end
+    end
+
+    module_function :standalone_init, :load_prediction, :load_ablation, :load_reference
   end
 end
 
