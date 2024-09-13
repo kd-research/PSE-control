@@ -13,7 +13,7 @@ scenenum = ARGV.shift
 subdir = ARGV.shift
 
 abort "Must specify subdir in evac scenario" unless subdir
-SteerSuite.set_info("scene_evac_#{$scenenum}", subdir: subdir)
+SteerSuite.set_info("scene_evac_#{scenenum}", subdir: subdir)
 
 ParameterDatabase.establish_connection
 ParameterDatabase.initialize_database(force: true)

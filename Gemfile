@@ -27,4 +27,6 @@ group :development do
   gem "pry"
 end
 
-gem "matrix", "~> 0.4.2"
+if RUBY_VERSION >= "3.1"
+  gem "matrix", "~> 0.4.2"
+end
